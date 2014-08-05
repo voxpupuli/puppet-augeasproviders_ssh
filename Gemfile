@@ -25,7 +25,7 @@ group :development do
   gem 'puppetlabs_spec_helper', '>= 0.4.1'
   gem 'rake'
   gem 'rspec-puppet', :git => 'https://github.com/rodjek/rspec-puppet.git', :ref => '544b168'
-  gem 'simplecov'
+  gem 'simplecov', '~> 0.7.0'
   gem 'yard'
   gem 'redcarpet', '~> 2.0'
   gem 'pry'
