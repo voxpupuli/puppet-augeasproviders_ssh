@@ -1,4 +1,4 @@
-# shellvar: type/provider for shell files for Puppet
+# ssh: type/provider for shell files for Puppet
 
 This module provides a new type/provider for Puppet to read and modify shell
 config files using the Augeas configuration library.
