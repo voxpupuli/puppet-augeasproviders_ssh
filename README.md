@@ -1,6 +1,6 @@
-# ssh: type/provider for shell files for Puppet
+# ssh: type/provider for ssh files for Puppet
 
-This module provides a new type/provider for Puppet to read and modify shell
+This module provides a new type/provider for Puppet to read and modify ssh
 config files using the Augeas configuration library.
 
 The advantage of using Augeas over the default Puppet `parsedfile`
