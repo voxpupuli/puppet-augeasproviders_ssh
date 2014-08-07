@@ -1,8 +1,0 @@
-name    'herculesteam-augeasproviders_ssh'
-version '1.0.0'
-source 'git://github.com/hercules-team/augeasproviders_ssh'
-author 'Dominic Cleal, Raphael Pinson'
-license 'Apache 2.0'
-summary 'Augeas-based ssh types and providers for Puppet'
-description 'This module provides types/providers for ssh configuration files using the Augeas configuration API library.'
-project_page 'http://augeasproviders.com'
