@@ -26,7 +26,7 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
           if value.nil?
             label
           else
-            "#{label}=\"#{value}\""
+            %Q{#{label}="#{value}"}
           end
         end
 
@@ -84,7 +84,7 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
         if value.nil?
           label
         else
-          "#{label}=\"#{value}\""
+          %Q{#{label}="#{value}"}
         end
       end
     end
