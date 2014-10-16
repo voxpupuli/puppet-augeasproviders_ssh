@@ -123,6 +123,10 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       target => "/etc/ssh/another_sshd_config",
     }
 
+### ssh_authorized_key
+
+See [https://docs.puppetlabs.com/references/latest/type.html#sshauthorizedkey](the Puppet types documentation) for sample usage.
+
 ### sshd_config provider
 
 #### manage simple entry
