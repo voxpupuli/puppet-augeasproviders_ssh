@@ -17,34 +17,6 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
     "$target/*[comment='#{resource[:name]}']"
   end
 
-  def self.instances
-    augopen do |aug|
-      aug.match('$target/key').map do |key|
-        options = aug.match("#{key}/options/*").map do |opt|
-          label = path_label(aug, opt)
-          value = aug.get(opt)
-          if value.nil?
-            label
-          else
-            %Q{#{label}="#{value}"}
-          end
-        end
-
-        uid = Puppet::FileSystem.stat(target).uid
-        user = Etc.getpwuid(uid).name
-
-        new({
-          :ensure  => :present,
-          :name    => aug.get("#{key}/comment"),
-          :key     => aug.get(key),
-          :type    => aug.get("#{key}/type"),
-          :options => options,
-          :user    => user
-        })
-      end
-    end
-  end
-
   def self.set_options(aug, values)
     aug.rm('$resource/options/*')
     values.each do |opt|

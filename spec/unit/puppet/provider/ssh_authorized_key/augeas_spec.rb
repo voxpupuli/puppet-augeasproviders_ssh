@@ -39,25 +39,6 @@ describe provider_class do
     let(:tmptarget) { aug_fixture("full") }
     let(:target) { tmptarget.path }
 
-    it "should list instances" do
-      provider_class.stubs(:target).returns(target)
-      inst = provider_class.instances.map { |p|
-        {
-          :name   => p.get(:name),
-          :user   => p.get(:user),
-          :ensure => p.get(:ensure),
-          :type   => p.get(:type),
-          :key    => p.get(:key),
-        }
-      }
-
-      inst.size.should == 5 
-      inst[0].should == {:name=>"user@example.net", :user=>user, :ensure=>:present, :type=>"ssh-rsa", :key=>"AAAAB3NzaLiPk=="}
-      inst[1].should == {:name=>"john@example.net", :user=>user, :ensure=>:present, :type=>"ssh-rsa", :key=>"AAAAB219Q=="}
-      inst[2].should == {:name=>"example.net", :user=>user, :ensure=>:present, :type=>"ssh-dss", :key=>"AAAAC351R=="}
-      inst[4].should == {:name=>"jane@example.net", :user=>user, :ensure=>:present, :type=>"ssh-rsa", :key=>"AAAA...=="}
-    end
-
     describe "when creating settings" do
       it "should create new entry" do
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
