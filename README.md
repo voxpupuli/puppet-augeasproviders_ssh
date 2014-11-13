@@ -50,6 +50,7 @@ Augeas Versions           | 0.10.0  | 1.0.0   | 1.1.0   | 1.2.0   |
 **FEATURES**              |
 case-insensitive keys     | no      | **yes** | **yes** | **yes** |
 **PROVIDERS**             |
+ssh\_config               | **yes** | **yes** | **yes** | **yes** |
 sshd\_config              | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
 
@@ -57,6 +58,64 @@ sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
 
 Type documentation can be generated with `puppet doc -r type` or viewed on the
 [Puppet Forge page](http://forge.puppetlabs.com/herculesteam/augeasproviders_ssh).
+
+### ssh_config provider
+
+#### manage simple entry
+
+    ssh_config { "ForwardAgent":
+      ensure => present,
+      value  => "yes",
+    }
+
+#### manage array entry
+
+    ssh_config { "SendEnv":
+      ensure => present,
+      value  => ["LC_*", "LANG"],
+    }
+
+#### manage entry for a specific host
+
+    ssh_config { "X11Forwarding":
+      ensure    => present,
+      host      => "example.net",
+      value     => "yes",
+    }
+
+#### manage entries with same name for different hosts
+
+    ssh_config { "ForwardAgent global":
+      ensure => present,
+      key    => "ForwardAgent",
+      value  => "no",
+    }
+
+    ssh_config { "ForwardAgent on example.net":
+      ensure    => present,
+      key       => "ForwardAgent",
+      host      => "example.net",
+      value     => "yes",
+    }
+
+#### delete entry
+
+    ssh_config { "HashKnownHosts":
+      ensure => absent,
+    }
+
+    ssh_config { "BatchMode":
+      ensure    => absent,
+      host      => "example.net",
+    }
+
+#### manage entry in another ssh_config location
+
+    ssh_config { "CheckHostIP":
+      ensure => present,
+      value  => "yes",
+      target => "/etc/ssh/another_sshd_config",
+    }
 
 ### sshd_config provider
 
