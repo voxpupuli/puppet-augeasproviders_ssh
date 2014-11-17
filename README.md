@@ -1,3 +1,4 @@
+[![Puppet Forge](http://img.shields.io/puppetforge/v/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
 [![Build Status](https://travis-ci.org/hercules-team/augeasproviders_ssh.svg?branch=master)](https://travis-ci.org/hercules-team/augeasproviders_ssh)
 [![Coverage Status](https://img.shields.io/coveralls/hercules-team/augeasproviders_ssh.svg)](https://coveralls.io/r/hercules-team/augeasproviders_ssh)
 
