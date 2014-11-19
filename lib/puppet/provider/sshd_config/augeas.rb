@@ -46,7 +46,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
   end
 
   def self.set_value(aug, base, path, label, value)
-    if label =~ /(((Allow|Deny)(Groups|Users))|AcceptEnv|MACs)/i
+    if label =~ /(((Allow|Deny)(Groups|Users))|AcceptEnv|MACs|KexAlgorithms|Ciphers)/i
 
       if aug.match("#{base}/Match").empty?
         # insert as the last line
