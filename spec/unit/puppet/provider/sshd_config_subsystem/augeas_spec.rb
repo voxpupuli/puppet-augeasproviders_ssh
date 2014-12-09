@@ -23,7 +23,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
-        aug.get("Subsystem/sftp").should == "/usr/lib/openssh/sftp-server"
+        expect(aug.get("Subsystem/sftp")).to eq("/usr/lib/openssh/sftp-server")
       end
     end
   end
@@ -42,9 +42,9 @@ describe provider_class do
         }
       }
 
-      inst.size.should == 1
-      inst[0].should == {:name=>"sftp", :ensure=>:present,
-	                 :command=>"/usr/libexec/openssh/sftp-server"}
+      expect(inst.size).to eq(1)
+      expect(inst[0]).to eq({:name=>"sftp", :ensure=>:present,
+	                 :command=>"/usr/libexec/openssh/sftp-server"})
     end
 
     describe "when creating settings" do
@@ -57,7 +57,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("Subsystem/mysub").should == "/bin/bash"
+          expect(aug.get("Subsystem/mysub")).to eq("/bin/bash")
         end
       end
     end
@@ -66,7 +66,7 @@ describe provider_class do
       it "should delete a setting" do
         expr = "Subsystem/sftp"
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should_not == []
+          expect(aug.match(expr)).not_to eq([])
         end
 
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
@@ -77,7 +77,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should == []
+          expect(aug.match(expr)).to eq([])
         end
       end
     end
@@ -92,7 +92,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("Subsystem/sftp").should == "/bin/bash"
+          expect(aug.get("Subsystem/sftp")).to eq("/bin/bash")
         end
       end
     end
@@ -110,9 +110,9 @@ describe provider_class do
         :provider => "augeas"
       ))
 
-      txn.any_failed?.should_not == nil
-      @logs.first.level.should == :err
-      @logs.first.message.include?(target).should == true
+      expect(txn.any_failed?).not_to eq(nil)
+      expect(@logs.first.level).to eq(:err)
+      expect(@logs.first.message.include?(target)).to eq(true)
     end
   end
 end

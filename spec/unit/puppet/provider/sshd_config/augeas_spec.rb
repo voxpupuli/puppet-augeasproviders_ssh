@@ -23,7 +23,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
-        aug.get("PermitRootLogin").should == "yes"
+        expect(aug.get("PermitRootLogin")).to eq("yes")
       end
     end
 
@@ -36,8 +36,8 @@ describe provider_class do
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
-        aug.get("AllowGroups/1").should == "sshgroups"
-        aug.get("AllowGroups/2").should == "admins"
+        expect(aug.get("AllowGroups/1")).to eq("sshgroups")
+        expect(aug.get("AllowGroups/2")).to eq("admins")
       end
     end
 
@@ -51,9 +51,9 @@ describe provider_class do
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
-        aug.get("Match[1]/Condition/Host").should == "foo"
-        aug.get("Match[1]/Condition/User").should == "root"
-        aug.get("Match[1]/Settings/X11Forwarding").should == "yes"
+        expect(aug.get("Match[1]/Condition/Host")).to eq("foo")
+        expect(aug.get("Match[1]/Condition/User")).to eq("root")
+        expect(aug.get("Match[1]/Settings/X11Forwarding")).to eq("yes")
       end
     end
 
@@ -136,16 +136,16 @@ describe provider_class do
         }
       }
 
-      inst.size.should == 17
-      inst[0].should == {:name=>"ListenAddress", :ensure=>:present, :value=>["0.0.0.0", "::"], :condition=>:absent}
-      inst[1].should == {:name=>"SyslogFacility", :ensure=>:present, :value=>["AUTHPRIV"], :condition=>:absent}
-      inst[2].should == {:name=>"AllowGroups", :ensure=>:present, :value=>["sshusers", "admins"], :condition=>:absent}
-      inst[3].should == {:name=>"PermitRootLogin", :ensure=>:present, :value=>["without-password"], :condition=>:absent}
-      inst[4].should == {:name=>"PasswordAuthentication", :ensure=>:present, :value=>["yes"], :condition=>:absent}
-      inst[8].should == {:name=>"UsePAM", :ensure=>:present, :value=>["yes"], :condition=>:absent}
-      inst[9].should == {:name=>"AcceptEnv", :ensure=>:present, :value=>["LANG", "LC_CTYPE", "LC_NUMERIC", "LC_TIME", "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER", "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT", "LC_IDENTIFICATION", "LC_ALL", "LANGUAGE", "XMODIFIERS"], :condition=>:absent}
-      inst[12].should == {:name=>"X11Forwarding", :ensure=>:present, :value=>["no"], :condition=> "User anoncvs"}
-      inst[15].should == {:name=>"AllowAgentForwarding", :ensure=>:present, :value=>["no"], :condition=> "Host *.example.net User *"}
+      expect(inst.size).to eq(17)
+      expect(inst[0]).to eq({:name=>"ListenAddress", :ensure=>:present, :value=>["0.0.0.0", "::"], :condition=>:absent})
+      expect(inst[1]).to eq({:name=>"SyslogFacility", :ensure=>:present, :value=>["AUTHPRIV"], :condition=>:absent})
+      expect(inst[2]).to eq({:name=>"AllowGroups", :ensure=>:present, :value=>["sshusers", "admins"], :condition=>:absent})
+      expect(inst[3]).to eq({:name=>"PermitRootLogin", :ensure=>:present, :value=>["without-password"], :condition=>:absent})
+      expect(inst[4]).to eq({:name=>"PasswordAuthentication", :ensure=>:present, :value=>["yes"], :condition=>:absent})
+      expect(inst[8]).to eq({:name=>"UsePAM", :ensure=>:present, :value=>["yes"], :condition=>:absent})
+      expect(inst[9]).to eq({:name=>"AcceptEnv", :ensure=>:present, :value=>["LANG", "LC_CTYPE", "LC_NUMERIC", "LC_TIME", "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER", "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT", "LC_IDENTIFICATION", "LC_ALL", "LANGUAGE", "XMODIFIERS"], :condition=>:absent})
+      expect(inst[12]).to eq({:name=>"X11Forwarding", :ensure=>:present, :value=>["no"], :condition=> "User anoncvs"})
+      expect(inst[15]).to eq({:name=>"AllowAgentForwarding", :ensure=>:present, :value=>["no"], :condition=> "Host *.example.net User *"})
     end
 
     describe "when creating settings" do
@@ -158,7 +158,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("Banner").should == "/etc/issue"
+          expect(aug.get("Banner")).to eq("/etc/issue")
         end
       end
 
@@ -172,7 +172,7 @@ describe provider_class do
         ))
   
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("Match[2]/Settings/ListenAddress[preceding-sibling::Port]").size.should == 1
+          expect(aug.match("Match[2]/Settings/ListenAddress[preceding-sibling::Port]").size).to eq(1)
         end
       end
 
@@ -203,8 +203,8 @@ describe provider_class do
         ))
   
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("AllowUsers/1").should == "ssh"
-          aug.get("AllowUsers/2").should == "foo"
+          expect(aug.get("AllowUsers/1")).to eq("ssh")
+          expect(aug.get("AllowUsers/2")).to eq("foo")
         end
       end
 
@@ -218,7 +218,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("Match[3]/Settings/AllowAgentForwarding").should == "yes"
+          expect(aug.get("Match[3]/Settings/AllowAgentForwarding")).to eq("yes")
         end
       end
     end
@@ -227,7 +227,7 @@ describe provider_class do
       it "should delete a setting" do
         expr = "PermitRootLogin"
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should_not == []
+          expect(aug.match(expr)).not_to eq([])
         end
 
         apply!(Puppet::Type.type(:sshd_config).new(
@@ -238,14 +238,14 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should == []
+          expect(aug.match(expr)).to eq([])
         end
       end
 
       it "should delete all instances of a setting" do
         expr = "ListenAddress"
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should_not == []
+          expect(aug.match(expr)).not_to eq([])
         end
 
         apply!(Puppet::Type.type(:sshd_config).new(
@@ -256,14 +256,14 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should == []
+          expect(aug.match(expr)).to eq([])
         end
       end
 
       it "should delete from a Match block" do
         expr = "Match[*]/Settings/AllowAgentForwarding"
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should_not == []
+          expect(aug.match(expr)).not_to eq([])
         end
 
         apply!(Puppet::Type.type(:sshd_config).new(
@@ -275,7 +275,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match(expr).should == []
+          expect(aug.match(expr)).to eq([])
         end
       end
     end
@@ -290,8 +290,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("*[label()='PermitRootLogin']").size.should == 1
-          aug.get("PermitRootLogin").should == "yes"
+          expect(aug.match("*[label()='PermitRootLogin']").size).to eq(1)
+          expect(aug.get("PermitRootLogin")).to eq("yes")
         end
       end
 
@@ -305,7 +305,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.get("Match[*]/Settings/X11Forwarding").should == "yes"
+          expect(aug.get("Match[*]/Settings/X11Forwarding")).to eq("yes")
         end
       end
 
@@ -318,9 +318,9 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("AcceptEnv/*").size.should == 2
-          aug.get("AcceptEnv/1").should == "BAR"
-          aug.get("AcceptEnv/2").should == "LC_FOO"
+          expect(aug.match("AcceptEnv/*").size).to eq(2)
+          expect(aug.get("AcceptEnv/1")).to eq("BAR")
+          expect(aug.get("AcceptEnv/2")).to eq("LC_FOO")
         end
       end
 
@@ -333,10 +333,10 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress").size.should == 3
-          aug.get("ListenAddress[1]").should == "192.168.1.1"
-          aug.get("ListenAddress[2]").should == "192.168.2.1"
-          aug.get("ListenAddress[3]").should == "192.168.3.1"
+          expect(aug.match("ListenAddress").size).to eq(3)
+          expect(aug.get("ListenAddress[1]")).to eq("192.168.1.1")
+          expect(aug.get("ListenAddress[2]")).to eq("192.168.2.1")
+          expect(aug.get("ListenAddress[3]")).to eq("192.168.3.1")
         end
       end
 
@@ -349,8 +349,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress").size.should == 1
-          aug.get("ListenAddress").should == "192.168.1.1"
+          expect(aug.match("ListenAddress").size).to eq(1)
+          expect(aug.get("ListenAddress")).to eq("192.168.1.1")
         end
       end
 
@@ -363,8 +363,8 @@ describe provider_class do
         ))
   
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size.should == 1
-          aug.get("PasswordAuthentication").should == "no"
+          expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
+          expect(aug.get("PasswordAuthentication")).to eq("no")
         end
       end
   
@@ -379,10 +379,10 @@ describe provider_class do
         ))
   
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("GSSAPIAuthentication").size.should == 1
-          aug.match("GSSAPIauthentIcAtion").size.should == 1
-          aug.get("GSSAPIAuthentication").should == "yes"
-          aug.get("GSSAPIauthentIcAtion").should == "no"
+          expect(aug.match("GSSAPIAuthentication").size).to eq(1)
+          expect(aug.match("GSSAPIauthentIcAtion").size).to eq(1)
+          expect(aug.get("GSSAPIAuthentication")).to eq("yes")
+          expect(aug.get("GSSAPIauthentIcAtion")).to eq("no")
         end
       end
     end
@@ -402,10 +402,10 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress").size.should == 3
-          aug.get("ListenAddress[1]").should == "192.168.1.1"
-          aug.get("ListenAddress[2]").should == "192.168.2.1"
-          aug.get("ListenAddress[3]").should == "192.168.3.1"
+          expect(aug.match("ListenAddress").size).to eq(3)
+          expect(aug.get("ListenAddress[1]")).to eq("192.168.1.1")
+          expect(aug.get("ListenAddress[2]")).to eq("192.168.2.1")
+          expect(aug.get("ListenAddress[3]")).to eq("192.168.3.1")
         end
       end
 
@@ -418,9 +418,9 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("AcceptEnv/*").size.should == 2
-          aug.get("AcceptEnv/1").should == "BAR"
-          aug.get("AcceptEnv/2").should == "LC_FOO"
+          expect(aug.match("AcceptEnv/*").size).to eq(2)
+          expect(aug.get("AcceptEnv/1")).to eq("BAR")
+          expect(aug.get("AcceptEnv/2")).to eq("LC_FOO")
         end
       end
 
@@ -433,10 +433,10 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress").size.should == 3
-          aug.get("ListenAddress[1]").should == "192.168.1.1"
-          aug.get("ListenAddress[2]").should == "192.168.2.1"
-          aug.get("ListenAddress[3]").should == "192.168.3.1"
+          expect(aug.match("ListenAddress").size).to eq(3)
+          expect(aug.get("ListenAddress[1]")).to eq("192.168.1.1")
+          expect(aug.get("ListenAddress[2]")).to eq("192.168.2.1")
+          expect(aug.get("ListenAddress[3]")).to eq("192.168.3.1")
         end
       end
 
@@ -449,8 +449,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress").size.should == 1
-          aug.get("ListenAddress").should == "192.168.1.1"
+          expect(aug.match("ListenAddress").size).to eq(1)
+          expect(aug.get("ListenAddress")).to eq("192.168.1.1")
         end
       end
 
@@ -480,7 +480,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("ListenAddress[preceding-sibling::Port]").size.should == 2
+          expect(aug.match("ListenAddress[preceding-sibling::Port]").size).to eq(2)
         end
       end
     end
@@ -495,8 +495,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          aug.match("*[label()='PermitRootLogin']").size.should == 1
-          aug.get("PermitRootLogin").should == "yes"
+          expect(aug.match("*[label()='PermitRootLogin']").size).to eq(1)
+          expect(aug.get("PermitRootLogin")).to eq("yes")
         end
       end
     end
@@ -514,9 +514,9 @@ describe provider_class do
         :provider => "augeas"
       ))
 
-      txn.any_failed?.should_not == nil
-      @logs.first.level.should == :err
-      @logs.first.message.include?(target).should == true
+      expect(txn.any_failed?).not_to eq(nil)
+      expect(@logs.first.level).to eq(:err)
+      expect(@logs.first.message.include?(target)).to eq(true)
     end
   end
 end

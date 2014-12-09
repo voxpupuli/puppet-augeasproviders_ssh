@@ -23,7 +23,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
-        aug.get("Host/ForwardAgent").should == "yes"
+        expect(aug.get("Host/ForwardAgent")).to eq("yes")
       end
     end
 
@@ -36,8 +36,8 @@ describe provider_class do
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
-        aug.get("Host/SendEnv/1").should == "LANG"
-        aug.get("Host/SendEnv/2").should == "LC_TYPE"
+        expect(aug.get("Host/SendEnv/1")).to eq("LANG")
+        expect(aug.get("Host/SendEnv/2")).to eq("LC_TYPE")
       end
     end
 
@@ -51,7 +51,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
-        aug.get("Host[.='example.net']/ForwardAgent").should == "yes"
+        expect(aug.get("Host[.='example.net']/ForwardAgent")).to eq("yes")
       end
     end
 
@@ -135,11 +135,11 @@ describe provider_class do
         }
       }
 
-      inst.size.should == 4
-      inst[0].should == {:name=>"SendEnv", :ensure=>:present, :value=>["LANG", "LC_*"], :key=>"SendEnv", :host=>"*"}
-      inst[1].should == {:name=>"HashKnownHosts", :ensure=>:present, :value=>["yes"], :key=>"HashKnownHosts", :host=>"*"}
-      inst[2].should == {:name=>"GSSAPIAuthentication", :ensure=>:present, :value=>["yes"], :key=>"GSSAPIAuthentication", :host=>"*"}
-      inst[3].should == {:name=>"GSSAPIDelegateCredentials", :ensure=>:present, :value=>["no"], :key=>"GSSAPIDelegateCredentials", :host=>"*"}
+      expect(inst.size).to eq(4)
+      expect(inst[0]).to eq({:name=>"SendEnv", :ensure=>:present, :value=>["LANG", "LC_*"], :key=>"SendEnv", :host=>"*"})
+      expect(inst[1]).to eq({:name=>"HashKnownHosts", :ensure=>:present, :value=>["yes"], :key=>"HashKnownHosts", :host=>"*"})
+      expect(inst[2]).to eq({:name=>"GSSAPIAuthentication", :ensure=>:present, :value=>["yes"], :key=>"GSSAPIAuthentication", :host=>"*"})
+      expect(inst[3]).to eq({:name=>"GSSAPIDelegateCredentials", :ensure=>:present, :value=>["no"], :key=>"GSSAPIDelegateCredentials", :host=>"*"})
     end
 
     describe "when creating settings" do
@@ -153,7 +153,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.get("Host[.='example.net']/ForwardAgent").should == "yes"
+          expect(aug.get("Host[.='example.net']/ForwardAgent")).to eq("yes")
         end
       end
 
@@ -167,8 +167,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.get("Host[.='example.net']/SendEnv/1").should == "LC_*"
-          aug.get("Host[.='example.net']/SendEnv/2").should == "LANG"
+          expect(aug.get("Host[.='example.net']/SendEnv/1")).to eq("LC_*")
+          expect(aug.get("Host[.='example.net']/SendEnv/2")).to eq("LANG")
         end
       end
     end
@@ -184,7 +184,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.match("Host[.='*']/HashKnownHosts").size.should == 0
+          expect(aug.match("Host[.='*']/HashKnownHosts").size).to eq(0)
         end
       end
     end
@@ -200,7 +200,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.get("Host[.='*']/HashKnownHosts").should == "no"
+          expect(aug.get("Host[.='*']/HashKnownHosts")).to eq("no")
         end
       end
 
@@ -214,9 +214,9 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.match("Host[.='*']/SendEnv/*").size.should == 2
-          aug.get("Host[.='*']/SendEnv/1").should == "foo"
-          aug.get("Host[.='*']/SendEnv/2").should == "bar"
+          expect(aug.match("Host[.='*']/SendEnv/*").size).to eq(2)
+          expect(aug.get("Host[.='*']/SendEnv/1")).to eq("foo")
+          expect(aug.get("Host[.='*']/SendEnv/2")).to eq("bar")
         end
       end
 
@@ -229,8 +229,8 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.match("Host[.='*']/*[label()=~regexp('GSSAPIAuthentication', 'i')]").size.should == 1
-          aug.get("Host[.='*']/GSSAPIAuthentication").should == "yes"
+          expect(aug.match("Host[.='*']/*[label()=~regexp('GSSAPIAuthentication', 'i')]").size).to eq(1)
+          expect(aug.get("Host[.='*']/GSSAPIAuthentication")).to eq("yes")
         end
       end
 
@@ -245,10 +245,10 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          aug.match("Host[.='*']/GSSAPIDelegateCredentials").size.should == 1
-          aug.match("Host[.='*']/GSSAPIDeLeGateCreDentials").size.should == 1
-          aug.get("Host[.='*']/GSSAPIDelegateCredentials").should == "no"
-          aug.get("Host[.='*']/GSSAPIDeLeGateCreDentials").should == "yes"
+          expect(aug.match("Host[.='*']/GSSAPIDelegateCredentials").size).to eq(1)
+          expect(aug.match("Host[.='*']/GSSAPIDeLeGateCreDentials").size).to eq(1)
+          expect(aug.get("Host[.='*']/GSSAPIDelegateCredentials")).to eq("no")
+          expect(aug.get("Host[.='*']/GSSAPIDeLeGateCreDentials")).to eq("yes")
         end
       end
     end
@@ -266,9 +266,9 @@ describe provider_class do
         :provider => "augeas"
       ))
 
-      txn.any_failed?.should_not == nil
-      @logs.first.level.should == :err
-      @logs.first.message.include?(target).should == true
+      expect(txn.any_failed?).not_to eq(nil)
+      expect(@logs.first.level).to eq(:err)
+      expect(@logs.first.message.include?(target)).to eq(true)
     end
   end
 end
