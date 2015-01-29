@@ -89,7 +89,8 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
           aug.set("#{path}[last()]", v)
         else
           # Prefer to create the node next to a commented out entry
-          commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?')]")
+          reg_flag = supported?(:regexpi) ? ", 'i'" : ''
+          commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?'#{reg_flag})]")
           if commented.empty?
             if aug.match("#{base}/Match").empty?
               # insert as the last line

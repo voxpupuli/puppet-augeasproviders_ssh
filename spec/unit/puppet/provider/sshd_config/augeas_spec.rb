@@ -194,6 +194,31 @@ describe provider_class do
         ')
       end
 
+      it "should add it next to commented out entry with different case when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name     => "usedns",
+          :value    => "no",
+          :target   => target,
+          :provider => "augeas"
+        ))
+
+        augparse_filter(target, "Sshd.lns", '*[preceding-sibling::#comment[.="ShowPatchLevel no"]][label()!="Match"]', '
+          { "#comment" = "UseDNS yes" }
+          { "usedns" = "no" }
+          { "#comment" = "PidFile /var/run/sshd.pid" }
+          { "#comment" = "MaxStartups 10" }
+          { "#comment" = "PermitTunnel no" }
+          { "#comment" = "ChrootDirectory none" }
+          { "#comment" = "no default banner path" }
+          { "#comment" = "Banner none" }
+          { "#comment" = "override default of no subsystems" }
+          { "Subsystem"
+            { "sftp" = "/usr/libexec/openssh/sftp-server" }
+          }
+          { "#comment" = "Example of overriding settings on a per-user basis" }
+        ')
+      end
+
       it "should create an array entry" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "AllowUsers",
