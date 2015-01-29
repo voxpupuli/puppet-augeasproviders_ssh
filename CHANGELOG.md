@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+
+- Properly insert values after commented out entry if case doesn't match (GH #6)
+
 ## 2.2.1
 
 - Convert specs to rspec3 syntax
