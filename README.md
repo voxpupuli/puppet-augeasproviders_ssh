@@ -56,6 +56,7 @@ case-insensitive keys     | no      | **yes** | **yes** | **yes** |
 **PROVIDERS**             |
 ssh\_config               | **yes** | **yes** | **yes** | **yes** |
 sshd\_config              | **yes** | **yes** | **yes** | **yes** |
+sshd\_config\_match       | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
 sshkey                    | **yes** | **yes** | **yes** | **yes** |
 
@@ -190,6 +191,39 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
     sshd_config { "PermitRootLogin":
       ensure => present,
       value  => "yes",
+      target => "/etc/ssh/another_sshd_config",
+    }
+
+### sshd_config_match provider
+
+#### manage entry
+
+    sshd_config_match { "Host *.example.net":
+      ensure => present,
+    }
+
+#### manage entry with position
+
+    sshd_config_match { "Host *.example.net":
+      ensure   => present,
+      position => "before first match",
+    }
+
+    sshd_config_match { "User foo":
+      ensure   => present,
+      position => "after Host *.example.net",
+    }
+
+#### delete entry
+
+    sshd_config_match { "User foo Host *.example.net":
+      ensure => absent,
+    }
+
+#### manage entry in another sshd_config location
+
+    sshd_config_match { "Host *.example.net":
+      ensure => present,
       target => "/etc/ssh/another_sshd_config",
     }
 

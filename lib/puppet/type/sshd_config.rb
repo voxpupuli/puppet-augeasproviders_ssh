@@ -71,4 +71,16 @@ whitespace.  This is used if the `Match` block has multiple criteria.
   autorequire(:file) do
     self[:target]
   end
+
+  autorequire(:sshd_config_match) do
+    if self[:condition]
+      names = []
+      self[:condition].keys.permutation.to_a.each do |p|
+        name = p.map { |k| "#{k} #{self[:condition][k]}" }.join(' ')
+        names << name
+        names << "#{name} in #{self[:target]}"
+      end
+      names
+    end
+  end
 end
