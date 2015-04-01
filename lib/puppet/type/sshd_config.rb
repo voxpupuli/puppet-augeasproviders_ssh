@@ -56,6 +56,16 @@ whitespace.  This is used if the `Match` block has multiple criteria.
 
     condition => 'Host example.net User root'
       "
+
+    munge do |value|
+      if value.is_a? Hash
+        # TODO: test this
+        value
+      else
+        value_a = value.split
+        Hash[*value_a]
+      end
+    end
   end
 
   autorequire(:file) do

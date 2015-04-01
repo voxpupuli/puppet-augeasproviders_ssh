@@ -151,10 +151,9 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
 
   def self.match_conditions(resource=nil)
     if resource[:condition]
-      conditions = Hash[*resource[:condition].split(' ').flatten(1)]
-      cond_keys = conditions.keys.length
+      cond_keys = resource[:condition].keys.length
       cond_str = "[count(Condition/*)=#{cond_keys}]"
-      conditions.each { |k,v| cond_str += "[Condition/#{k}=\"#{v}\"]" }
+      resource[:condition].each { |k,v| cond_str += "[Condition/#{k}=\"#{v}\"]" }
       cond_str
     else
       ""
@@ -172,8 +171,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
       key = resource[:key] ? resource[:key] : resource[:name]
       if resource[:condition] && !self.class.match_exists?(aug, resource)
         aug.insert("$target/*[last()]", "Match", false)
-        conditions = Hash[*resource[:condition].split(' ').flatten(1)]
-        conditions.each do |k,v|
+        resource[:condition].each do |k,v|
           aug.set("$target/Match[last()]/Condition/#{k}", v)
         end
       end
