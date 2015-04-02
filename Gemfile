@@ -37,4 +37,8 @@ group :development, :unit_tests do
   gem 'puppet-lint-file_ensure-check',                     :require => false
   gem 'puppet-lint-version_comparison-check',              :require => false
   gem 'rspec-puppet-facts',                                :require => false
+
+  gem 'simplecov', '~> 0.7.0',                             :require => false
+  gem 'yard',                                              :require => false
+  gem 'redcarpet', '~> 2.0',                               :require => false
 end
