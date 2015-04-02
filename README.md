@@ -1,5 +1,6 @@
 [![Puppet Forge Version](http://img.shields.io/puppetforge/v/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
 [![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
+[![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
 [![Build Status](https://img.shields.io/travis/hercules-team/augeasproviders_ssh/master.svg)](https://travis-ci.org/hercules-team/augeasproviders_ssh)
 [![Coverage Status](https://img.shields.io/coveralls/hercules-team/augeasproviders_ssh.svg)](https://coveralls.io/r/hercules-team/augeasproviders_ssh)
 [![Gemnasium](https://img.shields.io/gemnasium/hercules-team/augeasproviders_ssh.svg)](https://gemnasium.com/hercules-team/augeasproviders_ssh)
