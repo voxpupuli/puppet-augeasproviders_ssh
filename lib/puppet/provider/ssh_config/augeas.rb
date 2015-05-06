@@ -68,6 +68,8 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
   def self.set_value(aug, base, path, label, value)
     if label =~ /Ciphers|SendEnv|MACs/i
       aug.rm("#{path}/*")
+      # In case there is more than one entry, keep only the first one
+      aug.rm("#{path}[position() != 1]")
       count = 0
       value.each do |v|
         count += 1
