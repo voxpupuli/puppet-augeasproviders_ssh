@@ -57,6 +57,7 @@ case-insensitive keys     | no      | **yes** | **yes** | **yes** |
 ssh\_config               | **yes** | **yes** | **yes** | **yes** |
 sshd\_config              | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
+sshkey                    | **yes** | **yes** | **yes** | **yes** |
 
 ## Documentation and examples
 
@@ -213,6 +214,58 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       ensure  => present,
       command => "/usr/lib/openssh/sftp-server",
       target  => "/etc/ssh/another_sshd_config",
+    }
+
+### sshkey provider
+
+#### manage entry
+
+    sshkey { "foo.example.com":
+      ensure  => present,
+      type    => "ssh-rsa",
+      key     => "AAADEADMEAT",
+    }
+
+#### manage entry with aliases
+
+    sshkey { "foo.example.com":
+      ensure       => present,
+      type         => "ssh-rsa",
+      key          => "AAADEADMEAT",
+      host_aliases => [ 'foo', '192.168.0.1' ],
+    }
+
+#### manage hashed entry
+
+    sshkey { "foo.example.com":
+      ensure        => present,
+      type          => "ssh-rsa",
+      key           => "AAADEADMEAT",
+      hash_hostname => true,
+    }
+
+#### hash existing entry
+
+    sshkey { "foo.example.com":
+      ensure        => hashed,
+      type          => "ssh-rsa",
+      key           => "AAADEADMEAT",
+      hash_hostname => true,
+    }
+
+#### delete entry
+
+    sshkey { "foo.example.com":
+      ensure => absent,
+    }
+
+#### manage entry in another ssh_known_hosts location
+
+    sshkey { "foo.example.com":
+      ensure  => present,
+      type    => "ssh-rsa",
+      key     => "AAADEADMEAT",
+      target  => "/root/.ssh/known_hosts",
     }
 
 ## Issues
