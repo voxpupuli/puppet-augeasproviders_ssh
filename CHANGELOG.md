@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0
+
+- Add sshkey provider (GH #13)
+- sshd_config: munge condition parameter
+- Improve test setup
+- Get rid of Gemfile.lock
+- Improve README badges
+
 ## 2.2.2
 
 - Properly insert values after commented out entry if case doesn't match (GH #6)
