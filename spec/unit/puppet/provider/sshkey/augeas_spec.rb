@@ -11,11 +11,12 @@ describe provider_class do
 
     it "should create simple new hashed entry" do
       apply!(Puppet::Type.type(:sshkey).new(
-        :name     => "foo.example.com",
-        :type     => "ssh-rsa",
-        :key      => "DEADMEAT",
-        :target   => target,
-        :provider => "augeas"
+        :name          => "foo.example.com",
+        :type          => "ssh-rsa",
+        :key           => "DEADMEAT",
+        :hash_hostname => :true,
+        :target        => target,
+        :provider      => "augeas"
       ))
 
       aug_open(target, "Known_Hosts.lns") do |aug|
@@ -28,12 +29,13 @@ describe provider_class do
 
     it "should create simple new hashed entry with aliases" do
       apply!(Puppet::Type.type(:sshkey).new(
-        :name         => "foo.example.com",
-        :type         => "ssh-rsa",
-        :key          => "DEADMEAT",
-        :host_aliases => [ 'foo', 'bar' ],
-        :target       => target,
-        :provider     => "augeas"
+        :name          => "foo.example.com",
+        :type          => "ssh-rsa",
+        :key           => "DEADMEAT",
+        :hash_hostname => :true,
+        :host_aliases  => [ 'foo', 'bar' ],
+        :target        => target,
+        :provider      => "augeas"
       ))
 
       aug_open(target, "Known_Hosts.lns") do |aug|
@@ -70,7 +72,7 @@ describe provider_class do
         :type          => "ssh-rsa",
         :key           => "DEADMEAT",
         :host_aliases  => [ 'foo', 'bar' ],
-        :hash_hostname => false,
+        :hash_hostname => :false,
         :target        => target,
         :provider      => "augeas"
       ))

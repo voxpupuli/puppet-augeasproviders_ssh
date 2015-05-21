@@ -9,7 +9,7 @@ class Puppet::Type::Sshkey
     "The provider supports hashed hostnames."
 
   newparam(:hash_hostname, :boolean => true, :required_features => :hashed_hostnames) do
-    defaultto :true
+    defaultto :false
   end
 end
 
