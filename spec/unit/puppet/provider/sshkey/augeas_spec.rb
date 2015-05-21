@@ -172,6 +172,26 @@ describe provider_class do
       end
     end
 
+    it "should hash existing clear value" do
+      apply!(Puppet::Type.type(:sshkey).new(
+        :name     => "foo.example.com",
+        :ensure   => "hashed",
+        :target   => target,
+        :provider => "augeas"
+      ))
+
+      aug_open(target, "Known_Hosts.lns") do |aug|
+        aug.match('./*[label()!="#comment"]').size.should == 4
+        aug.get('./2').should =~ /^\|1\|/
+        aug.get('./2/type').should == 'ssh-rsa'
+        aug.get('./2/key').should =~ /^AAAAB3NzaC1yc2/
+        aug.match('./2/alias').size.should == 0
+        aug.get('./4').should =~ /^\|1\|/
+        aug.get('./4/type').should == 'ssh-rsa'
+        aug.get('./4/key').should =~ /^AAAAB3NzaC1yc2/
+      end
+    end
+
     it "should remove clear entry" do
       apply!(Puppet::Type.type(:sshkey).new(
         :name     => "foo.example.com",
