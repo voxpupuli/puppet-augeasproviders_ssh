@@ -111,6 +111,21 @@ describe provider_class do
         end
       end
 
+      it "should add options to entry" do
+        pending "Lens doesn't exist" unless lens_exists?
+        apply!(Puppet::Type.type(:ssh_authorized_key).new(
+          :name     => "user@example.net",
+          :options  => ['tunnel="1"'],
+          :target   => target,
+          :provider => "augeas"
+        ))
+
+        aug_open(target, "Authorized_Keys.lns") do |aug|
+          aug.match("key[comment='user@example.net']/options/*").size.should == 1
+          aug.get("key[comment='user@example.net']/options/tunnel").should == "1"
+        end
+      end
+
       it "should remove all options" do
         pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(

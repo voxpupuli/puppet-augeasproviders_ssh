@@ -19,7 +19,8 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
   end
 
   def self.set_options(aug, values)
-    aug.rm('$resource/options/*')
+    aug.rm('$resource/options')
+    aug.insert('$resource/type', 'options', true)
     values.each do |opt|
       break if opt == :absent
       k, v = opt.split('=')
