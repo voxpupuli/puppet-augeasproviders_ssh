@@ -9,6 +9,12 @@ describe provider_class do
     File.stat(target).uid
   }
 
+  let(:lens_exists?) {
+    Augeas.open(nil, nil, Augeas::NO_LOAD) { |aug|
+      aug.match('/augeas/load/Authorized_Keys').size == 1
+    }
+  }
+
   before :each do
     FileTest.stubs(:exist?).returns false
   end
@@ -18,6 +24,7 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it "should create simple new entry" do
+      pending "Lens doesn't exist" unless lens_exists?
       apply!(Puppet::Type.type(:ssh_authorized_key).new(
         :name     => "nick@example.com",
         :user     => user,
@@ -39,6 +46,7 @@ describe provider_class do
 
     describe "when creating settings" do
       it "should create new entry" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "nick@example.com",
           :user     => user,
@@ -54,6 +62,7 @@ describe provider_class do
       end
 
       it "should create new entry with options" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "sue@example.com",
           :user     => user,
@@ -73,6 +82,7 @@ describe provider_class do
 
     describe "when deleting settings" do
       it "should remove entry" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "user@example.net",
           :ensure   => "absent",
@@ -88,6 +98,7 @@ describe provider_class do
 
     describe "when updating settings" do
       it "should change the user's key" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "user@example.net",
           :key      => "DEADMEAT",
@@ -101,6 +112,7 @@ describe provider_class do
       end
 
       it "should remove all options" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "john@example.net",
           :options  => [:absent],
@@ -114,6 +126,7 @@ describe provider_class do
       end
 
       it "should change the command option" do
+        pending "Lens doesn't exist" unless lens_exists?
         apply!(Puppet::Type.type(:ssh_authorized_key).new(
           :name     => "jane@example.net",
           :options  => ['command="/bin/false"'],
@@ -133,6 +146,7 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it "should fail to load" do
+      pending "Lens doesn't exist" unless lens_exists?
       txn = apply(Puppet::Type.type(:ssh_authorized_key).new(
         :name     => "nick@example.com",
         :user     => "nick",
