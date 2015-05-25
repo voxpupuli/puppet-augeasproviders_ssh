@@ -135,11 +135,12 @@ describe provider_class do
         }
       }
 
-      expect(inst.size).to eq(4)
+      expect(inst.size).to eq(5)
       expect(inst[0]).to eq({:name=>"SendEnv", :ensure=>:present, :value=>["LANG", "LC_*"], :key=>"SendEnv", :host=>"*"})
-      expect(inst[1]).to eq({:name=>"HashKnownHosts", :ensure=>:present, :value=>["yes"], :key=>"HashKnownHosts", :host=>"*"})
-      expect(inst[2]).to eq({:name=>"GSSAPIAuthentication", :ensure=>:present, :value=>["yes"], :key=>"GSSAPIAuthentication", :host=>"*"})
-      expect(inst[3]).to eq({:name=>"GSSAPIDelegateCredentials", :ensure=>:present, :value=>["no"], :key=>"GSSAPIDelegateCredentials", :host=>"*"})
+      expect(inst[1]).to eq({:name=>"SendEnv", :ensure=>:present, :value=>["QUX"], :key=>"SendEnv", :host=>"*"})
+      expect(inst[2]).to eq({:name=>"HashKnownHosts", :ensure=>:present, :value=>["yes"], :key=>"HashKnownHosts", :host=>"*"})
+      expect(inst[3]).to eq({:name=>"GSSAPIAuthentication", :ensure=>:present, :value=>["yes"], :key=>"GSSAPIAuthentication", :host=>"*"})
+      expect(inst[4]).to eq({:name=>"GSSAPIDelegateCredentials", :ensure=>:present, :value=>["no"], :key=>"GSSAPIDelegateCredentials", :host=>"*"})
     end
 
     describe "when creating settings" do
