@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.0
+
+- Add sshd_config_match type and provider (#GH 5)
+- Purge multiple array entries in ssh_config provider (GH #12)
+
 ## 2.3.0
 
 - Add sshkey provider (GH #13)
