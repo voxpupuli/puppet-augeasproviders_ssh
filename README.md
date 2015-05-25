@@ -55,7 +55,7 @@ Augeas Versions           | 0.10.0  | 1.0.0   | 1.1.0   | 1.2.0   |
 case-insensitive keys     | no      | **yes** | **yes** | **yes** |
 **PROVIDERS**             |
 ssh\_config               | **yes** | **yes** | **yes** | **yes** |
-ssh\_authorized\_key      | **yes** | **yes** | **yes** | **yes** |
+ssh\_authorized\_key      | no      | **yes** | **yes** | **yes** |
 sshd\_config              | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
 sshkey                    | **yes** | **yes** | **yes** | **yes** |

@@ -11,6 +11,7 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
   lens { 'Authorized_Keys.lns' }
 
   confine :feature => :augeas
+  confine :true => Augeas.open(nil, nil, Augeas::NO_LOAD) { |aug| aug.match('/augeas/load/Authorized_Keys').size == 1 }
   defaultfor :feature => :augeas
 
   resource_path do |resource|
