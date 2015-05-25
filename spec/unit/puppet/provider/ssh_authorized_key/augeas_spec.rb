@@ -6,9 +6,7 @@ provider_class = Puppet::Type.type(:ssh_authorized_key).provider(:augeas)
 
 describe provider_class do
   let (:user) {
-    # From the provider, because, really...
-    uid = Puppet::FileSystem.stat(target).uid
-    Etc.getpwuid(uid).name
+    File.stat(target).uid
   }
 
   before :each do

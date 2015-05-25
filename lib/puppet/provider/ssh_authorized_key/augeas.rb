@@ -63,9 +63,7 @@ Puppet::Type.type(:ssh_authorized_key).provide(:augeas, :parent => Puppet::Type.
   end
 
   def user
-    # From the ParsedFile provider
-    uid = Puppet::FileSystem.stat(target).uid
-    Etc.getpwuid(uid).name
+    File.stat(target).uid
   end
 
   attr_aug_accessor(:type)
