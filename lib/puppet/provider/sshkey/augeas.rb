@@ -41,13 +41,37 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
   confine :feature => :augeas
   defaultfor :feature => :augeas
 
+  def self.instances
+    augopen do |aug, path|
+      resources = []
+      aug.match('$target/*[label()!="#comment"]').each do |spath|
+        name = aug.get(spath)
+        # We only list non-hashed entries
+        next if name.start_with? '|1|'
+        aliases = aug.match("#{spath}/alias").map { |apath| aug.get(apath) }
+        resources << new({
+          :ensure        => :present,
+          :name          => name,
+          :type          => aug.get("#{spath}/type"),
+          :key           => aug.get("#{spath}/key"),
+          :host_aliases  => aliases,
+          :hash_hostname => false,
+          :target        => target,
+        })
+      end
+      resources
+    end
+  end
+
   # Override self.setvars to set $resource
   def self.setvars(aug, resource = nil)
     aug.set('/augeas/context', "/files#{target(resource)}")
     aug.defnode('target', "/files#{target(resource)}", nil)
-    # HACK: set to /non/existent so that exists? is happy
-    path = find_resource(aug, resource[:name]) || '/non/existent'
-    aug.defvar('resource', path)
+    if resource
+      # HACK: set to /non/existent so that exists? is happy
+      path = find_resource(aug, resource[:name]) || '/non/existent'
+      aug.defvar('resource', path)
+    end
   end
 
   def self.find_resource(aug, hostname)
