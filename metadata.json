@@ -1,6 +1,6 @@
 {
   "name": "herculesteam-augeasproviders_ssh",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "author": "Dominic Cleal, Raphael Pinson",
   "summary": "Augeas-based ssh types and providers for Puppet",
   "license": "Apache-2.0",

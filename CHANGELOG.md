@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0
+
+- Implement instances for sshkey (only for non-hashed entries)
+
 ## 2.4.0
 
 - Add sshd_config_match type and provider (#GH 5)
