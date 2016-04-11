@@ -20,7 +20,7 @@ end
 gem 'ruby-augeas', rbaugversion
 
 group :development, :unit_tests do
-  gem 'rake',                                              :require => false
+  gem 'rake', '< 11.0.1',                                  :require => false
   gem 'rspec', '< 3.2',                                    :require => false if RUBY_VERSION =~ /^1\.8/
   gem 'rspec-puppet',                                      :require => false
   gem 'puppetlabs_spec_helper',                            :require => false
@@ -38,7 +38,7 @@ group :development, :unit_tests do
   gem 'puppet-lint-version_comparison-check',              :require => false
   gem 'rspec-puppet-facts',                                :require => false
 
-  gem 'coveralls',                                         :require => false unless RUBY_VERSION =~ /^1\./
+  gem 'coveralls',                                         :require => false unless RUBY_VERSION =~ /^1\.8/
   gem 'simplecov', '~> 0.7.0',                             :require => false
   gem 'yard',                                              :require => false
   gem 'redcarpet', '~> 2.0',                               :require => false
