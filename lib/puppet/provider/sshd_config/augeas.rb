@@ -119,6 +119,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
       }.uniq.reject {|name| name.start_with?("#", "@")}
 
       settings.each do |name|
+        next if name.downcase == "subsystem"
         value = self.get_value(aug, "$target/#{name}")
         entry = {:ensure => :present, :name => name, :value => value}
         resources << new(entry) if entry[:value]
@@ -139,6 +140,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
         }.uniq.reject {|name| name.start_with?("#", "@")}
 
         settings.each do |name|
+          next if name.downcase == "subsystem"
           value = self.get_value(aug, "#{mpath}/Settings/#{name}")
           entry = {:ensure => :present, :name => name,
                    :value => value, :condition => cond_str}
