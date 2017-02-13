@@ -1,8 +1,10 @@
+# coding: utf-8
 # Alternative Augeas-based providers for Puppet
 #
 # Copyright (c) 2012 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
+raise("Missing augeasproviders_core dependency") if Puppet::Type.type(:augeasprovider).nil?
 Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc "Uses Augeas API to update a Subsystem parameter in sshd_config."
 

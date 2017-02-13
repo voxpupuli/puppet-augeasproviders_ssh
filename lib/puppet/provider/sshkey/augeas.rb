@@ -1,3 +1,4 @@
+# coding: utf-8
 # Alternative Augeas-based providers for Puppet
 #
 # Copyright (c) 2015 Raphaël Pinson
@@ -29,6 +30,7 @@ class Puppet::Type::Sshkey::Ensure
   end
 end
 
+raise("Missing augeasproviders_core dependency") if Puppet::Type.type(:augeasprovider).nil?
 Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc "Uses Augeas API to update SSH known_hosts entries"
 
