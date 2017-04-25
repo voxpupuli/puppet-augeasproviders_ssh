@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.1
+
+- Bugfix Release:
+  - Allow multiple values for GlobalKnownHostsFile (#GH 32)
+  - Ensure that AddressFamily comes before ListenAddress (#GH 34)
+
 ## 2.5.0
 
 - Implement instances for sshkey (only for non-hashed entries)
