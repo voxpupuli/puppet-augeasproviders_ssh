@@ -29,6 +29,20 @@ describe provider_class do
 
     it "should create an array entry" do
       apply!(Puppet::Type.type(:ssh_config).new(
+        :name     => "GlobalKnownHostsFile",
+        :value    => ["/etc/ssh/ssh_known_hosts", "/etc/ssh/ssh_known_hosts2"],
+        :target   => target,
+        :provider => "augeas"
+      ))
+
+      aug_open(target, "Ssh.lns") do |aug|
+        expect(aug.get("Host/GlobalKnownHostsFile/1")).to eq("/etc/ssh/ssh_known_hosts")
+        expect(aug.get("Host/GlobalKnownHostsFile/2")).to eq("/etc/ssh/ssh_known_hosts2")
+      end
+    end
+
+    it "should create an array entry" do
+      apply!(Puppet::Type.type(:ssh_config).new(
         :name     => "SendEnv",
         :value    => ["LANG", "LC_TYPE"],
         :target   => target,
