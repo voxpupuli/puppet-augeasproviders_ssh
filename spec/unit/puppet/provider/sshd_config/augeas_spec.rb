@@ -59,7 +59,7 @@ describe provider_class do
 
     context "when declaring two resources with same key" do
       it "should fail with same name" do
-        expect do 
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               :name      => "X11Forwarding",
@@ -79,7 +79,7 @@ describe provider_class do
       end
 
       it "should fail with different names, same key and no conditions" do
-        expect do 
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               :name      => "X11Forwarding",
@@ -99,7 +99,7 @@ describe provider_class do
       end
 
       it "should not fail with different names, same key and different conditions" do
-        expect do 
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               :name      => "X11Forwarding",
@@ -170,7 +170,7 @@ describe provider_class do
           :target    => target,
           :provider  => "augeas"
         ))
-  
+
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("Match[2]/Settings/ListenAddress[preceding-sibling::Port]").size).to eq(1)
         end
@@ -226,7 +226,7 @@ describe provider_class do
           :target   => target,
           :provider => "augeas"
         ))
-  
+
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("AllowUsers/1")).to eq("ssh")
           expect(aug.get("AllowUsers/2")).to eq("foo")
@@ -386,13 +386,13 @@ describe provider_class do
           :target   => target,
           :provider => "augeas"
         ))
-  
+
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
           expect(aug.get("PasswordAuthentication")).to eq("no")
         end
       end
-  
+
       it "should not replace settings case insensitively when on Augeas < 1.0.0" do
         provider_class.stubs(:supported?).with(:post_resource_eval)
         provider_class.stubs(:supported?).with(:regexpi).returns(false)
@@ -402,7 +402,7 @@ describe provider_class do
           :target   => target,
           :provider => "augeas"
         ))
-  
+
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("GSSAPIAuthentication").size).to eq(1)
           expect(aug.match("GSSAPIauthentIcAtion").size).to eq(1)
@@ -542,6 +542,57 @@ describe provider_class do
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)
+    end
+  end
+
+  ['AddressFamily', 'ListenAddress'].each do |key|
+    context "when adding AddressFamily" do
+      values = {
+        'AddressFamily' => 'any',
+        'ListenAddress' => '1.2.3.4'
+      }
+
+      let(:tmptarget) { aug_fixture("addressfamily_test") }
+      let(:target) { tmptarget.path }
+      let(:key) { key }
+      let(:value) { values[key] }
+
+      it "should ensure that AddressFamily comes before ListenAddress" do
+        provider_class.stubs(:target).returns(target)
+
+        def create_file_hash(provider_stub)
+
+          fh = Hash.new
+
+          provider_stub.instances.each { |p|
+            condition = p.get(:condition)
+            condition = 'Global' if condition == :absent
+
+            fh[condition] ||= []
+            fh[condition] << p.get(:name)
+          }
+
+          return fh
+        end
+
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name     => key,
+          :value    => value,
+          :target   => target,
+          :provider => "augeas"
+        ))
+
+        file_hash = create_file_hash(provider_class)
+
+        file_hash.keys.each do |section|
+          # Make sure our test input is correctly broken
+          af_index = file_hash[section].index('AddressFamily')
+          la_index = file_hash[section].index('ListenAddress')
+          if af_index && la_index
+            expect(af_index).to be < la_index
+          end
+        end
+      end
     end
   end
 end
