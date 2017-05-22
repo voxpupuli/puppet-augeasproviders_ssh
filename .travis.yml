@@ -17,6 +17,7 @@ matrix:
 
 install:
   - "travis_retry ./.travis.sh"
+
 script:
   - AUGEAS_LENS_LIB=lib/augeas/lenses:augeas/lenses bundle exec rake
   # Do not include the augeas/ directory in the deployed module
@@ -32,5 +33,5 @@ deploy:
     # all_branches is required to use tags
     all_branches: true
     # Only publish if our main Ruby target builds
-    rvm: 1.9.3
+    rvm: 2.1.9
     condition: "$FORGE_PUBLISH = true"
