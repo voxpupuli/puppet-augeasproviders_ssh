@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.2
+
+- Refactor the travis.yml for the current LTS versions of Puppet
+
 ## 2.5.1
 
 - Bugfix Release:
