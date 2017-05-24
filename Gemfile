@@ -48,3 +48,8 @@ group :development, :unit_tests do
   # mime-types-data requires Ruby version >= 2.0
   gem 'mime-types', '2.6.2' if RUBY_VERSION =~ /^1\.9/
 end
+
+group :system_tests do
+  gem 'beaker-rspec'
+  gem 'simp-beaker-helpers', ENV.fetch('SIMP_BEAKER_HELPERS_VERSION', '~> 1.5')
+end

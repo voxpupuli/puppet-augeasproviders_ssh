@@ -1,0 +1,63 @@
+HOSTS:
+  el7:
+    roles:
+      - default
+      - server
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_cmd: '/sbin/init'
+    docker_image_commands:
+      - 'yum install -y openssl'
+      - 'yum install -y epel-release'
+    docker_preserve_image: true
+
+  el6:
+    roles:
+      - client
+    platform: el-6-x86_64
+    hypervisor: docker
+    image: centos:6
+    docker_cmd: '/sbin/init'
+    docker_image_commands:
+      - 'yum install -y openssl'
+      - 'yum install -y epel-release'
+    docker_preserve_image: true
+
+# opensuse-leap:
+#   roles:
+#     - client
+#   platform: sles-leap-x86_64
+#   hypervisor: docker
+#   image: opensuse:leap
+#   docker_image_commands:
+#     - 'zypper --non-interactive install openssl'
+#   docker_preserve_image: true
+
+  ubuntu14-04:
+    roles:
+      - client
+    platform: ubuntu-14.04-x86_64
+    hypervisor: docker
+    image: ubuntu:trusty
+    docker_image_commands:
+      - 'apt-get -y install openssl'
+    docker_preserve_image: true
+
+  ubuntu16-04:
+    roles:
+      - client
+    platform: ubuntu-16.04-x86_64
+    hypervisor: docker
+    image: ubuntu:xenial
+    docker_image_commands:
+      - 'apt-get -y install openssl'
+    docker_preserve_image: true
+
+CONFIG:
+  ssh:
+    password: root
+    auth_methods:
+      - password
+  log_level: verbose
+  type: aio
