@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.3
+
+- ssh_config: fix HostKeyAlgorithms and KexAlgorithms (#GH 36)
+
 ## 2.5.2
 
 - Added docker acceptance test
