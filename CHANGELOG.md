@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.4
+
+- Fix support for 'puppet generate types'
+- Bumped supported puppet version to less than 6.0.0
+- Updated the spec_helper.rb to correctly load for Puppet 5
+- Added CentOS and OracleLinux to supported OS list
+
 ## 2.5.3
 
 - ssh_config: fix HostKeyAlgorithms and KexAlgorithms (#GH 36)
