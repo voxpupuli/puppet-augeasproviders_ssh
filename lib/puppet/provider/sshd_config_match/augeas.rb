@@ -121,7 +121,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
     end
   end
 
-  def create 
+  def create
     augopen! do |aug|
       path = self.class.static_path(resource)
       aug.defnode('resource', path, nil)

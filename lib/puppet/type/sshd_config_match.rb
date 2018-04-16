@@ -44,27 +44,26 @@ Puppet::Type.newtype(:sshd_config_match) do
   end
 
   def self.title_patterns
-    identity = lambda { |x| x }
     [
       [
         /^(((?:\S*\s+\S*)+)\s+in\s+(\S+))$/,
         [
-          [ :name, identity ],
-          [ :condition, identity ],
-          [ :target, identity ],
+          [ :name ],
+          [ :condition ],
+          [ :target ],
         ]
       ],
       [
         /^(((?:\S*\s+\S*)+))$/,
         [
-          [ :name, identity ],
-          [ :condition, identity ],
+          [ :name ],
+          [ :condition ],
         ]
       ],
       [
         /(.*)/,
         [
-          [ :name, identity ],
+          [ :name ],
         ]
       ]
     ]
