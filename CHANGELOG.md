@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5.4
+## 3.0.0
 
 - Fix support for 'puppet generate types'
 - Bumped supported puppet version to less than 6.0.0
