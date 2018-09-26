@@ -410,6 +410,23 @@ describe provider_class do
           expect(aug.get("GSSAPIauthentIcAtion")).to eq("no")
         end
       end
+
+      context "when using array_append" do
+          it "should not remove existing values" do
+              apply!(Puppet::Type.type(:sshd_config).new(
+                  :name         => "AcceptEnv",
+                  :value        => ["BAR", "LC_TIME"],
+                  :array_append => true,
+                  :target       => target,
+                  :provider     => "augeas"
+              ))
+
+              aug_open(target, "Sshd.lns") do |aug|
+                  expect(aug.match("AcceptEnv/*").size).to eq(17)
+                  expect(aug.get("AcceptEnv/17")).to eq("BAR")
+              end
+          end
+      end
     end
   end
 
