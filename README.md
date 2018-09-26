@@ -139,6 +139,14 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       value  => ["sshgroups", "admins"],
     }
 
+#### append to array entry
+
+    sshd_config { "AllowGroups":
+      ensure       => present,
+      value        => ["sshgroups", "admins"],
+      array_append => true,
+    }
+
 #### manage entry in a Match block
 
     sshd_config { "X11Forwarding":
