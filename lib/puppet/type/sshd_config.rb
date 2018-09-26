@@ -35,6 +35,65 @@ given."
 - DenyUsers.
 
 All other parameters take a string. When passing an array to other parameters, only the first value in the array will be considered."
+
+    munge do |v|
+      v.to_s
+    end
+
+    def insync?(is)
+      should_arr = Array(should)
+      is_arr = Array(is)
+
+      if provider.resource[:array_append]
+        (should_arr - is_arr).empty?
+      elsif should.size > 1
+        should_arr == is_arr
+      else
+        should == is
+      end
+    end
+
+    def sync
+      if provider.resource[:array_append]
+        # Merge the two arrays
+        is = @resource.property(:value).retrieve
+        is_arr = Array(is)
+
+        provider.value = is_arr | Array(self.should)
+      else
+        # Use the should array
+        provider.value = self.should
+      end
+    end
+
+    def should_to_s(new_value)
+      if provider.resource[:array_append]
+          # Merge the two arrays
+          is = @resource.property(:value).retrieve
+          is_arr = Array(is)
+
+          super(is_arr | Array(new_value))
+      else
+          super(new_value)
+      end
+    end
+  end
+
+  newparam(:array_append) do
+    desc "Whether to add to existing array values or replace all values."
+
+    newvalues :false, :true
+
+    defaultto :false
+
+    munge do |v|
+      case v
+      when true, "true", :true
+        true
+      when false, "false", :false
+        false
+      end
+    end
   end
 
   newparam(:target) do
