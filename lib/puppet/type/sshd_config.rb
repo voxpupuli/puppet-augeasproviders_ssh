@@ -65,6 +65,18 @@ All other parameters take a string. When passing an array to other parameters, o
         provider.value = self.should
       end
     end
+
+    def should_to_s(new_value)
+      if provider.resource[:array_append]
+          # Merge the two arrays
+          is = @resource.property(:value).retrieve
+          is_arr = Array(is)
+
+          super(is_arr | Array(new_value))
+      else
+          super(new_value)
+      end
+    end
   end
 
   newparam(:array_append) do
