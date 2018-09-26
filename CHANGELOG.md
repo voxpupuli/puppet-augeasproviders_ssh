@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+- Add support for array_append to sshd_config type (GH #43)
+
 ## 3.0.0
 
 - Fix support for 'puppet generate types'
