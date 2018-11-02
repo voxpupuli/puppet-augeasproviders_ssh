@@ -27,12 +27,14 @@ given."
   newproperty(:value, :array_matching => :all) do
     desc "Value to change the setting to. The follow parameters take an array of values:
 
-- MACs;
 - AcceptEnv;
 - AllowGroups;
 - AllowUsers;
+- Ciphers;
 - DenyGroups;
-- DenyUsers.
+- DenyUsers;
+- KexAlgorithms;
+- MACs.
 
 All other parameters take a string. When passing an array to other parameters, only the first value in the array will be considered."
 
