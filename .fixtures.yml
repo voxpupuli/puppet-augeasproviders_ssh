@@ -1,6 +1,10 @@
 fixtures:
+  forge_modules:
+    sshkeys_core:
+      repo: "puppetlabs/sshkeys_core"
+      puppet_version: '>= 6.0.0'
   repositories:
-    "augeasproviders_core":
+    augeasproviders_core:
       repo: "git://github.com/hercules-team/augeasproviders_core.git"
   symlinks:
     augeasproviders_ssh: "#{source_dir}"
