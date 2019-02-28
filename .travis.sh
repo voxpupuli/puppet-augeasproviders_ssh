@@ -2,7 +2,7 @@
 set -xe
 
 # Clone submodules in tree
-git clone https://github.com/hercules-team/augeas
+git submodule update --init
 
 if [ -z $AUGEAS ]; then
   # Use latest version of lenses
@@ -22,7 +22,6 @@ else
   sudo add-apt-repository -y ppa:raphink/augeas-1.1.0
   sudo add-apt-repository -y ppa:raphink/augeas-1.2.0
   sudo add-apt-repository -y ppa:raphink/augeas-1.3.0
-  sudo add-apt-repository -y ppa:raphink/augeas-1.4.0
 fi
 sudo add-apt-repository -y ppa:raphink/augeas
 sudo apt-get update
