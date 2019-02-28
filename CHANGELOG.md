@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.0
+
+- add support for Puppet 5 & 6
+- deprecate support for Puppet < 5
+- update supported OSes in metadata.json
+
 ## 3.1.0
 
 - Add support for array_append to sshd_config type (GH #43)
