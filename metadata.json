@@ -5,7 +5,7 @@
   "summary": "Augeas-based ssh types and providers for Puppet",
   "license": "Apache-2.0",
   "source": "https://github.com/hercules-team/augeasproviders_ssh",
-  "project_page": "http://augeasproviders.com",
+  "project_page": "https://github.com/hercules-team/augeasproviders_ssh",
   "issues_url": "https://github.com/hercules-team/augeasproviders_ssh/issues",
   "description": "This module provides types/providers for ssh configuration files using the Augeas configuration API library.",
   "dependencies": [
