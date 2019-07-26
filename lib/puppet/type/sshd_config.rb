@@ -33,6 +33,7 @@ given."
 - Ciphers;
 - DenyGroups;
 - DenyUsers;
+- Port;
 - KexAlgorithms;
 - MACs.
 
