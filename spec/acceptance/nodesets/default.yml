@@ -12,9 +12,17 @@ HOSTS:
       - 'yum install -y epel-release'
     docker_preserve_image: true
 
+  el8:
+    platform: el-8-x86_64
+    hypervisor: docker
+    image: centos:8
+    docker_cmd: '/sbin/init'
+    docker_image_commands:
+      - 'yum install -y openssl'
+      - 'yum install -y epel-release'
+    docker_preserve_image: true
+
   el6:
-    roles:
-      - client
     platform: el-6-x86_64
     hypervisor: docker
     image: centos:6
@@ -35,8 +43,6 @@ HOSTS:
 #   docker_preserve_image: true
 
   ubuntu14-04:
-    roles:
-      - client
     platform: ubuntu-14.04-x86_64
     hypervisor: docker
     image: ubuntu:trusty
@@ -45,8 +51,6 @@ HOSTS:
     docker_preserve_image: true
 
   ubuntu16-04:
-    roles:
-      - client
     platform: ubuntu-16.04-x86_64
     hypervisor: docker
     image: ubuntu:xenial
