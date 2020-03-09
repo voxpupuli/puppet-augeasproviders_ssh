@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.0
+
+- Add EL8 support
+- Add 'Port' to the list of items supporting Arrays in the documentation
+
 ## 3.2.1
 
 - Fix puppet requirement to < 7.0.0
