@@ -41,6 +41,19 @@ describe provider_class do
       end
     end
 
+    it "should create a simple entry for GSSAPIKexAlgorithms" do
+      apply!(Puppet::Type.type(:sshd_config).new(
+        :name     => "GSSAPIKexAlgorithms",
+        :value    => "gss-group14-sha1-",
+        :target   => target,
+        :provider => "augeas"
+      ))
+
+      aug_open(target, "Sshd.lns") do |aug|
+        expect(aug.get("GSSAPIKexAlgorithms")).to eq("gss-group14-sha1-")
+      end
+    end
+
     it "should create new entry in a Match block" do
       apply!(Puppet::Type.type(:sshd_config).new(
         :name      => "X11Forwarding",
