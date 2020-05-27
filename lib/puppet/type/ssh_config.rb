@@ -50,6 +50,10 @@ All other parameters take a string. When passing an array to other parameters, o
     defaultto { '*' }
   end
 
+  newproperty(:comment) do
+    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
+  end
+
   autorequire(:file) do
     self[:target]
   end
