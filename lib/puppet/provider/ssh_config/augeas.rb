@@ -129,4 +129,41 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
       self.class.set_value(aug, self.class.base_path(resource), resource_path, key, value)
     end
   end
+
+  def after_comment_node(resource)
+    if resource[:ensure] == :unset
+      if unset_seq?
+        "@unset[*='#{resource[:variable]}']"
+      else
+        "@unset[.='#{resource[:variable]}']"
+      end
+    else
+      resource[:variable]
+    end
+  end
+
+  def comment
+    augopen do |aug|
+      after_comment = after_comment_node(resource)
+      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]")
+      comment.sub!(/^#{resource[:variable]}:\s*/, "") if comment
+      comment || ""
+    end
+  end
+
+  def comment=(value)
+    augopen! do |aug|
+      after_comment = after_comment_node(resource)
+      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]"
+      if value.empty?
+        aug.rm(cmtnode)
+      else
+        if aug.match(cmtnode).empty?
+          aug.insert("$target/#{resource[:variable]}", "#comment", true)
+        end
+        aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
+                "#{resource[:variable]}: #{resource[:comment]}")
+      end
+    end
+  end
 end
