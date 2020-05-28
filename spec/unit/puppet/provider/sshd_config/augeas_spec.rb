@@ -442,7 +442,7 @@ describe provider_class do
           :host      => "*",
           :value     => "no",
           :target    => target,
-          :provider  => "augeas"
+          :provider  => "augeas",
           :comment   => 'This is a different comment'
         ))
   
