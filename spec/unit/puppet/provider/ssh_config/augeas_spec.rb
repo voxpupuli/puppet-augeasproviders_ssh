@@ -69,6 +69,21 @@ describe provider_class do
       end
     end
 
+    it "should create new comment before entry" do
+      apply!(Puppet::Type.type(:ssh_config).new(
+        :name      => "DenyUsers",
+        :host      => "example.net",
+        :value     => "example_user",
+        :target    => target,
+        :provider  => "augeas"
+        :comment   => 'Deny example_user access'
+      ))
+
+      aug_open(target, "Ssh.lns") do |aug|
+        expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+      end
+    end
+
     context "when declaring two resources with same key" do
       it "should fail with same name" do
         expect do
@@ -186,6 +201,21 @@ describe provider_class do
           expect(aug.get("Host[.='example.net']/SendEnv/2")).to eq("LANG")
         end
       end
+      
+      it "should create new comment before entry" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "DenyUsers",
+          :host      => "example.net",
+          :value     => "example_user",
+          :target    => target,
+          :provider  => "augeas"
+          :comment   => 'Deny example_user access'
+        ))
+  
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+        end
+      end
     end
 
     describe "when deleting settings" do
@@ -202,6 +232,20 @@ describe provider_class do
           expect(aug.match("Host[.='*']/HashKnownHosts").size).to eq(0)
         end
       end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "VisualHostKey",
+          :ensure    => "absent",
+          :host      => "*",
+          :target    => target,
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
+        end
+      end
     end
 
     describe "when updating settings" do
@@ -216,6 +260,21 @@ describe provider_class do
 
         aug_open(target, "Ssh.lns") do |aug|
           expect(aug.get("Host[.='*']/HashKnownHosts")).to eq("no")
+        end
+      end
+
+      it "should relace the comment" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "VisualHostKey",
+          :host      => "*",
+          :value     => "no",
+          :target    => target,
+          :provider  => "augeas"
+          :comment   => 'This is a different comment'
+        ))
+  
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
       end
 
