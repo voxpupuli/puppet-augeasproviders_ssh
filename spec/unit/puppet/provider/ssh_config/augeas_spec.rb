@@ -75,7 +75,7 @@ describe provider_class do
         :host      => "example.net",
         :value     => "example_user",
         :target    => target,
-        :provider  => "augeas"
+        :provider  => "augeas",
         :comment   => 'Deny example_user access'
       ))
 
