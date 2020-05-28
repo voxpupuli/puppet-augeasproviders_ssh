@@ -36,8 +36,7 @@ describe provider_class do
       provider_class.stubs(:target).returns(target)
       inst = provider_class.instances.map { |p|
         {
-          :condition => p.get(:condition),
-          :ensure => p.get(:ensure),
+          :ensure    => p.get(:ensure),
           :condition => p.get(:condition),
         }
       }
