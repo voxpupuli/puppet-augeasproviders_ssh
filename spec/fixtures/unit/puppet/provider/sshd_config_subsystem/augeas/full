@@ -102,6 +102,8 @@ AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
 AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
 AcceptEnv XMODIFIERS
 
+#   This is a comment
+#   VisualHostKey no
 #AllowAgentForwarding yes
 #AllowTcpForwarding yes
 #GatewayPorts no

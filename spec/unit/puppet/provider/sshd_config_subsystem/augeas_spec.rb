@@ -26,6 +26,21 @@ describe provider_class do
         expect(aug.get("Subsystem/sftp")).to eq("/usr/lib/openssh/sftp-server")
       end
     end
+
+    it "should create new comment before entry" do
+      apply!(Puppet::Type.type(:sshd_config_match).new(
+        :name      => "DenyUsers",
+        :host      => "example.net",
+        :value     => "example_user",
+        :target    => target,
+        :provider  => "augeas"
+        :comment   => 'Deny example_user access'
+      ))
+
+      aug_open(target, "Ssh.lns") do |aug|
+        expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+      end
+    end
   end
 
   context "with full file" do
@@ -60,6 +75,21 @@ describe provider_class do
           expect(aug.get("Subsystem/mysub")).to eq("/bin/bash")
         end
       end
+
+      it "should create new comment before entry" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "DenyUsers",
+          :host      => "example.net",
+          :value     => "example_user",
+          :target    => target,
+          :provider  => "augeas"
+          :comment   => 'Deny example_user access'
+        ))
+  
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+        end
+      end
     end
 
     describe "when deleting settings" do
@@ -80,6 +110,20 @@ describe provider_class do
           expect(aug.match(expr)).to eq([])
         end
       end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "VisualHostKey",
+          :ensure    => "absent",
+          :host      => "*",
+          :target    => target,
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
+        end
+      end
     end
 
     describe "when updating settings" do
@@ -93,6 +137,21 @@ describe provider_class do
 
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("Subsystem/sftp")).to eq("/bin/bash")
+        end
+      end
+      
+      it "should relace the comment" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "VisualHostKey",
+          :host      => "*",
+          :value     => "no",
+          :target    => target,
+          :provider  => "augeas"
+          :comment   => 'This is a different comment'
+        ))
+  
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
       end
     end
