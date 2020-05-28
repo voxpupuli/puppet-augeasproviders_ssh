@@ -201,7 +201,7 @@ describe provider_class do
           expect(aug.get("Host[.='example.net']/SendEnv/2")).to eq("LANG")
         end
       end
-      
+
       it "should create new comment before entry" do
         apply!(Puppet::Type.type(:ssh_config).new(
           :name      => "DenyUsers",
@@ -211,7 +211,7 @@ describe provider_class do
           :provider  => "augeas",
           :comment   => 'Deny example_user access'
         ))
-  
+
         aug_open(target, "Ssh.lns") do |aug|
           expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
         end
@@ -272,7 +272,7 @@ describe provider_class do
           :provider  => "augeas",
           :comment   => 'This is a different comment'
         ))
-  
+
         aug_open(target, "Ssh.lns") do |aug|
           expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
