@@ -451,6 +451,20 @@ describe provider_class do
         end
       end
 
+      it "should replace settings case insensitively when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name     => "PaSswordaUtheNticAtion",
+          :value    => "no",
+          :target   => target,
+          :provider => "augeas"
+>>>>>>> First attempt at unit tests
+        ))
+
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
+        end
+      end
+
       it "should replace settings case insensitively" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "PaSswordaUtheNticAtion",
