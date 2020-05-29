@@ -456,7 +456,6 @@ describe provider_class do
           :value    => "no",
           :target   => target,
           :provider => "augeas"
->>>>>>> First attempt at unit tests
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
