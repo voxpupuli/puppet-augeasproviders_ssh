@@ -269,7 +269,6 @@ describe provider_class do
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          puts aug.match('#comment[following-sibling::SyslogFacility][last()]')
           expect(aug.get("#comment[following-sibling::SyslogFacility][last()]")).to eq("syslogFacility: more secure")
         end
       end
