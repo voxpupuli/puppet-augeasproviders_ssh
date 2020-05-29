@@ -14,14 +14,6 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
 
   confine :feature => :augeas
 
-  def self.regexpi_path(resource)
-    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
-    resource[:condition].each do |c, v|
-      path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
-    end
-    path += "]"
-  end
-
   def self.static_path(resource)
     path = "$target/Match[count(Condition/*)=#{resource[:condition].keys.size}]"
     resource[:condition].each do |c, v|
@@ -31,13 +23,11 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   end
 
   def self.path(resource)
-    if supported?(:regexpi)
-      self.regexpi_path(resource)
-    else
-      debug "Warning: Augeas >= 1.0.0 is required for case-insensitive support in ssh_config resources"
-      # TODO: test this?
-      self.static_path(resource)
+    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
+    resource[:condition].each do |c, v|
+      path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
     end
+    path += "]"
   end
 
   resource_path do |resource|
@@ -47,11 +37,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def self.instances
     augopen do |aug,path|
       resources = []
-      if supported?(:regexpi)
-        search_path = "$target/*[label()=~regexp('match', 'i')]/*[label()=~regexp('condition', 'i')]"
-      else
-        search_path = "$target/Match/Condition"
-      end
+      search_path = "$target/*[label()=~regexp('match', 'i')]/*[label()=~regexp('condition', 'i')]"
 
       aug.match("#{search_path}").each do |hpath|
         conditions = []
@@ -140,20 +126,20 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def after_comment_node(resource)
     if resource[:ensure] == :unset
       if unset_seq?
-        "@unset[*='#{resource[:variable]}']"
+        "@unset[*='#{resource[:name]}']"
       else
-        "@unset[.='#{resource[:variable]}']"
+        "@unset[.='#{resource[:name]}']"
       end
     else
-      resource[:variable]
+      resource[:name]
     end
   end
 
   def comment
     augopen do |aug|
       after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]")
-      comment.sub!(/^#{resource[:variable]}:\s*/, "") if comment
+      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
+      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
       comment || ""
     end
   end
@@ -161,15 +147,15 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def comment=(value)
     augopen! do |aug|
       after_comment = after_comment_node(resource)
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]"
+      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
       if value.empty?
         aug.rm(cmtnode)
       else
         if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:variable]}", "#comment", true)
+          aug.insert("$target/#{resource[:name]}", "#comment", true)
         end
         aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:variable]}: #{resource[:comment]}")
+                "#{resource[:name]}: #{resource[:comment]}")
       end
     end
   end

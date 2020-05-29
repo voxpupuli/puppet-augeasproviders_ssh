@@ -221,7 +221,7 @@ describe provider_class do
         ')
       end
 
-      it "should add it next to commented out entry with different case when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
+      it "should add it next to commented out entry with different case" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "usedns",
           :value    => "no",
@@ -269,7 +269,6 @@ describe provider_class do
           :provider  => "augeas",
           :comment   => 'Deny example_user access'
         ))
-  
         aug_open(target, "Ssh.lns") do |aug|
           expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
         end
@@ -444,7 +443,6 @@ describe provider_class do
           :provider  => "augeas",
           :comment   => 'This is a different comment'
         ))
-  
         aug_open(target, "Ssh.lns") do |aug|
           expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
@@ -458,27 +456,22 @@ describe provider_class do
           :provider => "augeas"
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
-          expect(aug.get("PasswordAuthentication")).to eq("no")
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
       end
 
-      it "should not replace settings case insensitively when on Augeas < 1.0.0" do
-        provider_class.stubs(:supported?).with(:post_resource_eval)
-        provider_class.stubs(:supported?).with(:regexpi).returns(false)
+      it "should replace settings case insensitively" do
         apply!(Puppet::Type.type(:sshd_config).new(
-          :name     => "GSSAPIauthentIcAtion",
+          :name     => "PaSswordaUtheNticAtion",
           :value    => "no",
           :target   => target,
           :provider => "augeas"
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.match("GSSAPIAuthentication").size).to eq(1)
-          expect(aug.match("GSSAPIauthentIcAtion").size).to eq(1)
-          expect(aug.get("GSSAPIAuthentication")).to eq("yes")
-          expect(aug.get("GSSAPIauthentIcAtion")).to eq("no")
+          expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
+          expect(aug.get("PasswordAuthentication")).to eq("no")
         end
       end
 

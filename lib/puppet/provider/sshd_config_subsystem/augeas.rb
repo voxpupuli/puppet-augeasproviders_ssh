@@ -15,11 +15,7 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
   confine :feature => :augeas
 
   resource_path do |resource|
-    if supported?(:regexpi)
-      "$target/*[label()=~regexp('Subsystem', 'i')]/#{resource[:name]}"
-    else
-      "$target/Subsystem/#{resource[:name]}"
-    end
+    "$target/*[label()=~regexp('Subsystem', 'i')]/#{resource[:name]}"
   end
 
   def self.instances
@@ -46,11 +42,7 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
 
   define_aug_method!(:destroy) do |aug, resource|
     key = resource[:name]
-    if supported?(:regexpi)
-      aug.rm("$target/*[label()=~regexp('Subsystem', 'i') and #{key}]")
-    else
-      aug.rm("$target/Subsystem[#{key}]")
-    end
+    aug.rm("$target/*[label()=~regexp('Subsystem', 'i') and #{key}]")
   end
 
   attr_aug_accessor(:command, :label => :resource)
@@ -58,20 +50,20 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
   def after_comment_node(resource)
     if resource[:ensure] == :unset
       if unset_seq?
-        "@unset[*='#{resource[:variable]}']"
+        "@unset[*='#{resource[:name]}']"
       else
-        "@unset[.='#{resource[:variable]}']"
+        "@unset[.='#{resource[:name]}']"
       end
     else
-      resource[:variable]
+      resource[:name]
     end
   end
 
   def comment
     augopen do |aug|
       after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]")
-      comment.sub!(/^#{resource[:variable]}:\s*/, "") if comment
+      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
+      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
       comment || ""
     end
   end
@@ -79,15 +71,15 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
   def comment=(value)
     augopen! do |aug|
       after_comment = after_comment_node(resource)
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]"
+      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
       if value.empty?
         aug.rm(cmtnode)
       else
         if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:variable]}", "#comment", true)
+          aug.insert("$target/#{resource[:name]}", "#comment", true)
         end
         aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:variable]}: #{resource[:comment]}")
+                "#{resource[:name]}: #{resource[:comment]}")
       end
     end
   end

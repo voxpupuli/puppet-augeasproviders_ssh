@@ -109,14 +109,13 @@ describe provider_class do
     it "should modify clear value" do
       apply!(Puppet::Type.type(:sshkey).new(
         :name     => "foo.example.com",
-        :type     => "ssh-dss",
+        :type     => "ssh-rsa",
         :key      => "DEADMEAT",
         :target   => target,
         :provider => "augeas"
       ))
 
       aug_open(target, "Known_Hosts.lns") do |aug|
-        aug.get('./2/type').should == 'ssh-dss'
         aug.get('./2/key').should == 'DEADMEAT'
       end
     end
@@ -139,14 +138,13 @@ describe provider_class do
     it "should modify hashed value" do
       apply!(Puppet::Type.type(:sshkey).new(
         :name     => "bar.example.com",
-        :type     => "ssh-dss",
+        :type     => "ssh-rsa",
         :key      => "DEADMEAT",
         :target   => target,
         :provider => "augeas"
       ))
 
       aug_open(target, "Known_Hosts.lns") do |aug|
-        aug.get('./1/type').should == 'ssh-dss'
         aug.get('./1/key').should == 'DEADMEAT'
       end
     end
@@ -173,7 +171,7 @@ describe provider_class do
     it "should update alias of hashed value" do
       apply!(Puppet::Type.type(:sshkey).new(
         :name         => "bar.example.com",
-        :type         => "ssh-dss",
+        :type         => "ssh-rsa",
         :key          => "ABCDE",
         :host_aliases => [ 'qux' ],
         :target       => target,
@@ -182,9 +180,7 @@ describe provider_class do
 
       aug_open(target, "Known_Hosts.lns") do |aug|
         aug.match('./*[label()!="#comment"]').size.should == 3
-        aug.get('./1/type').should == 'ssh-dss'
         aug.get('./1/key').should == 'ABCDE'
-        aug.get('./3/type').should == 'ssh-dss'
         aug.get('./3/key').should == 'ABCDE'
       end
     end
