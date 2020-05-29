@@ -435,15 +435,15 @@ describe provider_class do
 
       it "should replace the comment" do
         apply!(Puppet::Type.type(:sshd_config).new(
-          :name      => "hashknownhosts",
-          :value     => "no",
+          :name      => "SyslogFacility",
+          :value     => "AUTHPRIV",
           :target    => target,
           :provider  => "augeas",
           :comment   => 'This is a different comment'
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("#comment[following-sibling::HashKnownHosts][last()]")).to eq("hashknownhosts: This is a different comment")
+          expect(aug.get("#comment[following-sibling::SyslogFacility][last()]")).to eq("SyslogFacility: This is a different comment")
         end
       end
 
