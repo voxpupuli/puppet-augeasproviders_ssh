@@ -207,7 +207,7 @@ describe provider_class do
         ')
       end
 
-      it "should add it next to commented out entry with different case when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
+      it "should add it next to commented out entry with different case" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "usedns",
           :value    => "no",
@@ -392,7 +392,7 @@ describe provider_class do
         end
       end
 
-      it "should replace settings case insensitively when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
+      it "should replace settings case insensitively" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "PaSswordaUtheNticAtion",
           :value    => "no",
@@ -403,24 +403,6 @@ describe provider_class do
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
           expect(aug.get("PasswordAuthentication")).to eq("no")
-        end
-      end
-
-      it "should not replace settings case insensitively when on Augeas < 1.0.0" do
-        provider_class.stubs(:supported?).with(:post_resource_eval)
-        provider_class.stubs(:supported?).with(:regexpi).returns(false)
-        apply!(Puppet::Type.type(:sshd_config).new(
-          :name     => "GSSAPIauthentIcAtion",
-          :value    => "no",
-          :target   => target,
-          :provider => "augeas"
-        ))
-
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.match("GSSAPIAuthentication").size).to eq(1)
-          expect(aug.match("GSSAPIauthentIcAtion").size).to eq(1)
-          expect(aug.get("GSSAPIAuthentication")).to eq("yes")
-          expect(aug.get("GSSAPIauthentIcAtion")).to eq("no")
         end
       end
 
