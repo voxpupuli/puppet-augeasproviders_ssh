@@ -17,12 +17,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
   resource_path do |resource|
     base = self.base_path(resource)
     key = resource[:key] ? resource[:key] : resource[:name]
-    if supported?(:regexpi)
-      "#{base}/*[label()=~regexp('#{key}', 'i')]"
-    else
-      debug "Warning: Augeas >= 1.0.0 is required for case-insensitive support in sshd_config resources"
-      "#{base}/#{key}"
-    end
+    "#{base}/*[label()=~regexp('#{key}', 'i')]"
   end
 
   def self.base_path(resource)
@@ -90,8 +85,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
           aug.set("#{path}[last()]", v)
         else
           # Prefer to create the node next to a commented out entry
-          reg_flag = supported?(:regexpi) ? ", 'i'" : ''
-          commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?'#{reg_flag})]")
+          commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?', 'i')]")
           if commented.empty?
             if aug.match("#{base}/Match").empty?
               # insert as the last line
@@ -217,20 +211,20 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
   def after_comment_node(resource)
     if resource[:ensure] == :unset
       if unset_seq?
-        "@unset[*='#{resource[:variable]}']"
+        "@unset[*='#{resource[:name]}']"
       else
-        "@unset[.='#{resource[:variable]}']"
+        "@unset[.='#{resource[:name]}']"
       end
     else
-      resource[:variable]
+      resource[:name]
     end
   end
 
   def comment
     augopen do |aug|
       after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]")
-      comment.sub!(/^#{resource[:variable]}:\s*/, "") if comment
+      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
+      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
       comment || ""
     end
   end
@@ -238,15 +232,15 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
   def comment=(value)
     augopen! do |aug|
       after_comment = after_comment_node(resource)
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:variable]}:.*')]"
+      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
       if value.empty?
         aug.rm(cmtnode)
       else
         if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:variable]}", "#comment", true)
+          aug.insert("$target/#{resource[:name]}", "#comment", true)
         end
         aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:variable]}: #{resource[:comment]}")
+                "#{resource[:name]}: #{resource[:comment]}")
       end
     end
   end
