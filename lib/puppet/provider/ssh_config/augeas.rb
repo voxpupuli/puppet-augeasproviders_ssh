@@ -25,77 +25,77 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
     "$target/Host[.='#{resource[:host]}']"
   end
 
-  def self.instances
-    augopen do |aug,path|
-      resources = []
-      aug.match('$target/Host').each do |hpath|
-        aug.match("#{hpath}/*").each do |kpath|
-          label = path_label(aug, kpath)
-          next if label.start_with?("#")
+    def self.instances
+      augopen do |aug,path|
+        resources = []
+        aug.match('$target/Host').each do |hpath|
+          aug.match("#{hpath}/*").each do |kpath|
+            label = path_label(aug, kpath)
+            next if label.start_with?("#")
 
-          host = aug.get(hpath)
-          value = self.get_value(aug, kpath)
+            host = aug.get(hpath)
+            value = self.get_value(aug, kpath)
 
-          resources << new({
-            :ensure => :present,
-            :name   => label,
-            :key    => label,
-            :value  => value,
-            :host   => host
-          })
+            resources << new({
+              :ensure => :present,
+              :name   => label,
+              :key    => label,
+              :value  => value,
+              :host   => host
+            })
+          end
         end
+        resources
       end
-      resources
     end
-  end
 
-  def self.get_value(aug, pathx)
-    aug.match(pathx).map do |vp|
-      # Augeas lens does transparent multi-node (no counte reset) so check for any int
-      if aug.match("#{vp}/*[label()=~regexp('[0-9]*')]").empty?
-        aug.get(vp)
+    def self.get_value(aug, pathx)
+      aug.match(pathx).map do |vp|
+        # Augeas lens does transparent multi-node (no counte reset) so check for any int
+        if aug.match("#{vp}/*[label()=~regexp('[0-9]*')]").empty?
+          aug.get(vp)
+        else
+          aug.match("#{vp}/*").map do |svp|
+            aug.get(svp)
+          end
+        end
+      end.flatten
+    end
+
+    def self.set_value(aug, base, path, label, value)
+      if label =~ /Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile/i
+        aug.rm("#{path}/*")
+        # In case there is more than one entry, keep only the first one
+        aug.rm("#{path}[position() != 1]")
+        count = 0
+        value.each do |v|
+          count += 1
+          aug.set("#{path}/#{count}", v)
+        end
       else
-        aug.match("#{vp}/*").map do |svp|
-          aug.get(svp)
+        # Normal setting: one value per entry
+        value = value.clone
+
+        # Change any existing settings with this name
+        lastsp = nil
+        aug.match(path).each do |sp|
+          val = value.shift
+          if val.nil?
+            aug.rm(sp)
+          else
+            aug.set(sp, val)
+            lastsp = sp
+          end
         end
-      end
-    end.flatten
-  end
 
-  def self.set_value(aug, base, path, label, value)
-    if label =~ /Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile/i
-      aug.rm("#{path}/*")
-      # In case there is more than one entry, keep only the first one
-      aug.rm("#{path}[position() != 1]")
-      count = 0
-      value.each do |v|
-        count += 1
-        aug.set("#{path}/#{count}", v)
-      end
-    else
-      # Normal setting: one value per entry
-      value = value.clone
-
-      # Change any existing settings with this name
-      lastsp = nil
-      aug.match(path).each do |sp|
-        val = value.shift
-        if val.nil?
-          aug.rm(sp)
-        else
-          aug.set(sp, val)
-          lastsp = sp
-        end
-      end
-
-      # Insert new values for the rest
-      value.each do |v|
-        if lastsp
-          # After the most recent same setting (lastsp)
-          aug.insert(lastsp, label, false)
-          aug.set("#{path}[last()]", v)
-        else
-          # Prefer to create the node next to a commented out entry
+        # Insert new values for the rest
+        value.each do |v|
+          if lastsp
+            # After the most recent same setting (lastsp)
+            aug.insert(lastsp, label, false)
+            aug.set("#{path}[last()]", v)
+          else
+            # Prefer to create the node next to a commented out entry
           commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?')]")
           unless commented.empty?
             aug.insert(commented.first, label, false)
@@ -104,6 +104,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
         end
         lastsp = aug.match("#{path}[last()]")[0]
       end
+      aug.defvar('resource', path)
     end
   end
 
@@ -114,6 +115,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
       # create base_path
       aug.set(base_path, resource[:host])
       self.class.set_value(aug, base_path, "#{base_path}/#{key}", key, resource[:value])
+      self.class.set_comment(aug, base_path, resource[:name], resource[:comment]) if resource[:comment]
     end
   end
 
@@ -131,26 +133,31 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
   end
 
   def comment
+    base_path = self.class.base_path(resource)
     augopen do |aug|
-      comment = aug.get("$target/#comment[following-sibling::*[1]][. =~ regexp('#{resource[:name]}:.*')]")
+      comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{resource[:name]}', 'i')]][. =~ regexp('#{resource[:name]}:.*', 'i')]")
       comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
       comment || ""
     end
   end
 
   def comment=(value)
+    base_path = self.class.base_path(resource)
     augopen! do |aug|
-      after_comment = resource[:name]
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
-      if value.empty?
-        aug.rm(cmtnode)
-      else
-        if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:name]}", "#comment", true)
-        end
-        aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:name]}: #{resource[:comment]}")
+      self.class.set_comment(aug, base_path, resource[:name], value)
+    end
+  end
+
+  def self.set_comment(aug, base, name, value)
+    cmtnode = "#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]][. =~ regexp('#{name}:.*', 'i')]"
+    if value.empty?
+      aug.rm(cmtnode)
+    else
+      if aug.match(cmtnode).empty?
+        aug.insert('$resource', "#comment", true)
       end
+      aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
+              "#{name}: #{value}")
     end
   end
 end
