@@ -130,30 +130,17 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
     end
   end
 
-  def after_comment_node(resource)
-    if resource[:ensure] == :unset
-      if unset_seq?
-        "@unset[*='#{resource[:name]}']"
-      else
-        "@unset[.='#{resource[:name]}']"
-      end
-    else
-      resource[:name]
-    end
-  end
-
   def comment
     augopen do |aug|
-      after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
-      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
+      comment = aug.get("$target/#comment[following-sibling::*[1]][. =~ regexp('#{resource[:name]}:.*')]")
+      comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
       comment || ""
     end
   end
 
   def comment=(value)
     augopen! do |aug|
-      after_comment = after_comment_node(resource)
+      after_comment = resource[:name]
       cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
       if value.empty?
         aug.rm(cmtnode)
