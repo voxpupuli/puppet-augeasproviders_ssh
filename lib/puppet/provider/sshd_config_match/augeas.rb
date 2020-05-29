@@ -14,14 +14,6 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
 
   confine :feature => :augeas
 
-  def self.regexpi_path(resource)
-    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
-    resource[:condition].each do |c, v|
-      path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
-    end
-    path += "]"
-  end
-
   def self.static_path(resource)
     path = "$target/Match[count(Condition/*)=#{resource[:condition].keys.size}]"
     resource[:condition].each do |c, v|
@@ -31,13 +23,11 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   end
 
   def self.path(resource)
-    if supported?(:regexpi)
-      self.regexpi_path(resource)
-    else
-      debug "Warning: Augeas >= 1.0.0 is required for case-insensitive support in ssh_config resources"
-      # TODO: test this?
-      self.static_path(resource)
+    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
+    resource[:condition].each do |c, v|
+      path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
     end
+    path += "]"
   end
 
   resource_path do |resource|
@@ -47,11 +37,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def self.instances
     augopen do |aug,path|
       resources = []
-      if supported?(:regexpi)
-        search_path = "$target/*[label()=~regexp('match', 'i')]/*[label()=~regexp('condition', 'i')]"
-      else
-        search_path = "$target/Match/Condition"
-      end
+      search_path = "$target/*[label()=~regexp('match', 'i')]/*[label()=~regexp('condition', 'i')]"
 
       aug.match("#{search_path}").each do |hpath|
         conditions = []

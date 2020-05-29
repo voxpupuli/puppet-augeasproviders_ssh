@@ -18,12 +18,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
   resource_path do |resource|
     base = self.base_path(resource)
     key = resource[:key] ? resource[:key] : resource[:name]
-    if supported?(:regexpi)
-      "#{base}/*[label()=~regexp('#{key}', 'i')]"
-    else
-      debug "Warning: Augeas >= 1.0.0 is required for case-insensitive support in ssh_config resources"
-      "#{base}/#{key}"
-    end
+    "#{base}/*[label()=~regexp('#{key}', 'i')]"
   end
 
   def self.base_path(resource)
