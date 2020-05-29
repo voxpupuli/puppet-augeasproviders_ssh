@@ -212,7 +212,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers]")).to eq("DenyUsers: Deny example_user access")
+          expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers][last()]")).to eq("DenyUsers: Deny example_user access")
         end
       end
     end
@@ -262,18 +262,17 @@ describe provider_class do
         end
       end
 
-      it "should relace the comment" do
+      it "should replace the comment" do
         apply!(Puppet::Type.type(:ssh_config).new(
-          :name      => "hashknownhosts",
+          :name      => "HashKnownHosts",
           :host      => "*",
-          :value     => "yes",
           :target    => target,
           :provider  => "augeas",
           :comment   => 'This is a different comment'
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.get("Host[.='*']/#comment[following-sibling::HashKnownHosts][last()]")).to eq("hashknownhosts: This is a different comment")
+          expect(aug.get("Host[.='*']/#comment[following-sibling::HashKnownHosts][last()]")).to eq("HashKnownHosts: This is a different comment")
         end
       end
 

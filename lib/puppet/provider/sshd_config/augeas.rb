@@ -185,6 +185,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
      end
 
       self.class.set_value(aug, base_path, "#{base_path}/#{key}", key, resource[:value])
+      self.class.set_comment(aug, base_path, key, resource[:comment]) if resource[:comment]
     end
   end
 
@@ -208,40 +209,34 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
     end
   end
 
-  def after_comment_node(resource)
-    if resource[:ensure] == :unset
-      if unset_seq?
-        "@unset[*='#{resource[:name]}']"
-      else
-        "@unset[.='#{resource[:name]}']"
-      end
-    else
-      resource[:name]
-    end
-  end
-
   def comment
+    base_path = self.class.base_path(resource)
+    key = resource[:key] ? resource[:key] : resource[:name]
     augopen do |aug|
-      after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
-      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
+      comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{key}', 'i')]][. =~ regexp('#{key}:.*', 'i')]")
+      comment.sub!(/^#{key}:\s*/i, "") if comment
       comment || ""
     end
   end
 
   def comment=(value)
+    base_path = self.class.base_path(resource)
+    key = resource[:key] ? resource[:key] : resource[:name]
     augopen! do |aug|
-      after_comment = after_comment_node(resource)
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
-      if value.empty?
-        aug.rm(cmtnode)
-      else
-        if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:name]}", "#comment", true)
-        end
-        aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:name]}: #{resource[:comment]}")
+      self.class.set_comment(aug, base_path, key, value)
+    end
+  end
+
+  def self.set_comment(aug, base, name, value)
+    cmtnode = "#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]][. =~ regexp('#{name}:.*', 'i')]"
+    if value.empty?
+      aug.rm(cmtnode)
+    else
+      if aug.match(cmtnode).empty?
+        aug.insert("#{base}/#{name}", "#comment", true)
       end
+      aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
+              "#{name}: #{value}")
     end
   end
 end
