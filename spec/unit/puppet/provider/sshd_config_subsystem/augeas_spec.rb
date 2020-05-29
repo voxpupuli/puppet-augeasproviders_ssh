@@ -28,13 +28,12 @@ describe provider_class do
     end
 
     it "should create new comment before entry" do
-      apply!(Puppet::Type.type(:sshd_config_match).new(
-        :name      => "DenyUsers",
-        :host      => "example.net",
-        :value     => "example_user",
-        :target    => target,
-        :provider  => "augeas",
-        :comment   => 'Deny example_user access'
+      apply!(Puppet::Type.type(:sshd_config_subsystem).new(
+        :name      => "sftp",
+        :command  => "/usr/lib/openssh/sftp-server",
+        :target   => target,
+        :provider => "augeas",
+        :comment   => 'Use the external subsystem'
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
