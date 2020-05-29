@@ -29,13 +29,12 @@ ListenAddress ::
 
 # Logging
 # obsoletes QuietMode and FascistLogging
-#SyslogFacility AUTH
+#SyslogFacility: AUTHPRIV
 SyslogFacility AUTHPRIV
 #LogLevel INFO
 
 # Authentication:
 
-# AllowGroups: only two groups
 AllowGroups sshusers admins
 
 #LoginGraceTime 2m

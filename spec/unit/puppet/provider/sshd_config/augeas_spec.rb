@@ -50,8 +50,8 @@ describe provider_class do
         :comment   => 'Deny example_user access'
       ))
 
-      aug_open(target, "Ssh.lns") do |aug|
-        expect(aug.get("DenyUsers[preceding-sibling::#comment]")).to eq("Deny example_user access")
+      aug_open(target, "Sshd.lns") do |aug|
+        expect(aug.get("#comment[following-sibling::DenyUsers][last()]")).to eq("DenyUsers: Deny example_user access")
       end
     end
 
@@ -262,15 +262,15 @@ describe provider_class do
 
       it "should create new comment before entry" do
         apply!(Puppet::Type.type(:sshd_config).new(
-          :name      => "DenyUsers",
-          :value     => "example_user",
+          :name      => "syslogFacility",
           :target    => target,
           :provider  => "augeas",
-          :comment   => 'Deny example_user access'
+          :comment   => 'more secure'
         ))
 
-        aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.get("DenyUsers[preceding-sibling::#comment][last()]")).to eq("yes")
+        aug_open(target, "Sshd.lns") do |aug|
+          puts aug.match('#comment[following-sibling::SyslogFacility][last()]')
+          expect(aug.get("#comment[following-sibling::SyslogFacility][last()]")).to eq("syslogFacility: more secure")
         end
       end
 
@@ -353,7 +353,7 @@ describe provider_class do
           :provider  => "augeas"
         ))
 
-        aug_open(target, "Ssh.lns") do |aug|
+        aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
         end
       end
@@ -442,21 +442,8 @@ describe provider_class do
           :comment   => 'This is a different comment'
         ))
 
-        aug_open(target, "Ssh.lns") do |aug|
+        aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("#comment[following-sibling::HashKnownHosts][last()]")).to eq("hashknownhosts: This is a different comment")
-        end
-      end
-
-      it "should replace settings case insensitively when on Augeas >= 1.0.0", :if => provider_class.supported?(:regexpi) do
-        apply!(Puppet::Type.type(:sshd_config).new(
-          :name     => "PaSswordaUtheNticAtion",
-          :value    => "no",
-          :target   => target,
-          :provider => "augeas"
-        ))
-
-        aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.match("VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
         end
       end
 

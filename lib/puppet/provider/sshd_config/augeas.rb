@@ -101,7 +101,6 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
         end
         lastsp = aug.match("#{path}[last()]")[0]
       end
-      aug.defvar('resource', path)
     end
   end
 
@@ -215,16 +214,8 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
     key = resource[:key] ? resource[:key] : resource[:name]
     augopen do |aug|
       comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{key}', 'i')]][. =~ regexp('#{key}:.*', 'i')]")
-      augprint(aug)
-      puts "comment: #{comment}"
       comment.sub!(/^#{key}:\s*/i, "") if comment
       comment || ""
-    end
-  end
-
-  def augprint(aug)
-    aug.match('$target|$target//*').each do |m|
-      puts "#{m}: #{aug.get(m)}"
     end
   end
 
@@ -232,11 +223,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
     base_path = self.class.base_path(resource)
     key = resource[:key] ? resource[:key] : resource[:name]
     augopen! do |aug|
-      augprint(aug)
-      puts "Setting comment to #{value}"
       self.class.set_comment(aug, base_path, key, value)
-
-      augprint(aug)
     end
   end
 
@@ -246,11 +233,10 @@ Puppet::Type.type(:sshd_config).provide(:augeas, :parent => Puppet::Type.type(:a
       aug.rm(cmtnode)
     else
       if aug.match(cmtnode).empty?
-        aug.insert('$resource', "#comment", true)
+        aug.insert("#{base}/#{name}", "#comment", true)
       end
       aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
               "#{name}: #{value}")
-      print "set value"
     end
   end
 end
