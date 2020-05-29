@@ -265,7 +265,7 @@ describe provider_class do
 
       it "should replace the comment" do
         apply!(Puppet::Type.type(:ssh_config).new(
-          :name      => "allowgroups",
+          :name      => "HashKnownHosts",
           :host      => "*",
           :target    => target,
           :provider  => "augeas",
@@ -273,7 +273,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.get("Host[.='*']/#comment[following-sibling::AllowGroups][last()]")).to eq("allowgroups: This is a different comment")
+          expect(aug.get("Host[.='*']/#comment[following-sibling::HashKnownHosts][last()]")).to eq("HashKnownHosts: This is a different comment")
         end
       end
 
