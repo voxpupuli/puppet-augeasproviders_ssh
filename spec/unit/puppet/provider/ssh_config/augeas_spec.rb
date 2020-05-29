@@ -80,7 +80,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
-        expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+        expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers]")).to eq("DenyUsers: Deny example_user access")
       end
     end
 
@@ -213,7 +213,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+          expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers]")).to eq("DenyUsers: Deny example_user access")
         end
       end
     end
@@ -274,7 +274,7 @@ describe provider_class do
         ))
 
         aug_open(target, "Ssh.lns") do |aug|
-          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment][value()=~regexp('This is a different comment', 'i')]").size).to eq(1)
+          expect(aug.get("Host[.='example.net']/#comment[following-sibling::VisualHostKey]")).to eq("VisualHostKey: This is a different comment")
         end
       end
 
