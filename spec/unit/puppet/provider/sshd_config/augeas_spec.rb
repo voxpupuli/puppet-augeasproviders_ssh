@@ -44,7 +44,6 @@ describe provider_class do
     it "should create new comment before entry" do
       apply!(Puppet::Type.type(:sshd_config).new(
         :name      => "DenyUsers",
-        :host      => "example.net",
         :value     => "example_user",
         :target    => target,
         :provider  => "augeas",
@@ -52,7 +51,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Ssh.lns") do |aug|
-        expect(aug.get("Host[.='example.net']/DenyUsers[preceding-sibling::#comment]")).to eq("yes")
+        expect(aug.get("DenyUsers[preceding-sibling::#comment]")).to eq("Deny example_user access")
       end
     end
 

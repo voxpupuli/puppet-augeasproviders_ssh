@@ -28,7 +28,7 @@ describe provider_class do
     end
 
     it "should create new comment before entry" do
-      apply!(Puppet::Type.type(:sshd_config_match).new(
+      apply!(Puppet::Type.type(:sshd_config_subsystem).new(
         :name      => "sftp",
         :command  => "/usr/lib/openssh/sftp-server",
         :target   => target,
