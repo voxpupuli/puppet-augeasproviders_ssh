@@ -45,11 +45,13 @@ Host *
 #   Tunnel no
 #   TunnelDevice any:any
 #   PermitLocalCommand no
+#   This is a comment
 #   VisualHostKey no
 #   ProxyCommand ssh -q -W %h:%p gateway.example.com
 #   RekeyLimit 1G 1h
     SendEnv LANG LC_*
     SendEnv QUX
+    # HashKnownHosts: more secure
     HashKnownHosts yes
     GSSAPIAuthentication yes
     GSSAPIDelegateCredentials no

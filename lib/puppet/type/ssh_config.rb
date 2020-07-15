@@ -9,7 +9,7 @@ Puppet::Type.newtype(:ssh_config) do
 The resource name is used for the setting name, but if the `host` is
 given, then the name can be something else and the `key` given as the name
 of the setting.
-"
+  "
 
   ensurable
 
@@ -48,6 +48,10 @@ All other parameters take a string. When passing an array to other parameters, o
     desc "Host condition for the entry."
 
     defaultto { '*' }
+  end
+
+  newproperty(:comment) do
+    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
   end
 
   autorequire(:file) do

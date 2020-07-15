@@ -104,6 +104,15 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       value     => "yes",
     }
 
+#### manage entry with a comment
+
+    ssh_config { "ForwardAgent":
+      ensure  => present,
+      key     => "ForwardAgent",
+      value   => "no",
+      comment => "Do not forward",
+    }
+
 #### delete entry
 
     ssh_config { "HashKnownHosts":
@@ -183,6 +192,15 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       value     => "no",
     }
 
+#### manage entry with a comment
+
+    sshd_config { "X11Forwarding":
+      ensure  => present,
+      key     => "X11Forwarding",
+      value   => "no",
+      comment => "No X11",
+    }
+
 #### delete entry
 
     sshd_config { "PermitRootLogin":
@@ -222,6 +240,13 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       position => "after Host *.example.net",
     }
 
+#### manage entry with a comment
+
+    sshd_config_match { "Host *.example.net":
+      ensure  => present,
+      comment => "Example network",
+    }
+
 #### delete entry
 
     sshd_config_match { "User foo Host *.example.net":
@@ -242,6 +267,14 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
     sshd_config_subsystem { "sftp":
       ensure  => present,
       command => "/usr/lib/openssh/sftp-server",
+    }
+
+#### manage entry with a comment
+
+    sshd_config_subsystem { "sftp":
+      ensure  => present,
+      command => "/usr/lib/openssh/sftp-server",
+      comment => "SFTP sub",
     }
 
 #### delete entry

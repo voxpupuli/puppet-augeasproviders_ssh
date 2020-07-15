@@ -104,6 +104,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
         end
         lastsp = aug.match("#{path}[last()]")[0]
       end
+      aug.defvar('resource', path)
     end
   end
 
@@ -114,6 +115,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
       # create base_path
       aug.set(base_path, resource[:host])
       self.class.set_value(aug, base_path, "#{base_path}/#{key}", key, resource[:value])
+      self.class.set_comment(aug, base_path, resource[:name], resource[:comment]) if resource[:comment]
     end
   end
 
@@ -127,6 +129,35 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
     augopen! do |aug|
       key = resource[:key] ? resource[:key] : resource[:name]
       self.class.set_value(aug, self.class.base_path(resource), resource_path, key, value)
+    end
+  end
+
+  def comment
+    base_path = self.class.base_path(resource)
+    augopen do |aug|
+      comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{resource[:name]}', 'i')]][. =~ regexp('#{resource[:name]}:.*', 'i')]")
+      comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
+      comment || ""
+    end
+  end
+
+  def comment=(value)
+    base_path = self.class.base_path(resource)
+    augopen! do |aug|
+      self.class.set_comment(aug, base_path, resource[:name], value)
+    end
+  end
+
+  def self.set_comment(aug, base, name, value)
+    cmtnode = "#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]][. =~ regexp('#{name}:.*', 'i')]"
+    if value.empty?
+      aug.rm(cmtnode)
+    else
+      if aug.match(cmtnode).empty?
+        aug.insert('$resource', "#comment", true)
+      end
+      aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
+              "#{name}: #{value}")
     end
   end
 end
