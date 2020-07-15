@@ -26,6 +26,20 @@ describe provider_class do
         expect(aug.get("Match/Condition/Host")).to eq("foo")
       end
     end
+
+    it "should create new comment before entry" do
+      apply!(Puppet::Type.type(:sshd_config_match).new(
+        :name      => "Host foo",
+        :target    => target,
+        :ensure    => :present,
+        :comment   => "manage host foo",
+        :provider  => "augeas"
+      ))
+
+      aug_open(target, "Sshd.lns") do |aug|
+        expect(aug.get("Match[Condition/Host]/Settings/#comment")).to eq("Host foo: manage host foo")
+      end
+    end
   end
 
   context "with full file" do
@@ -90,6 +104,19 @@ describe provider_class do
           expect(aug.get("Match/Condition/Fooz")).to eq("bar")
         end
       end
+
+      it "should create new comment before entry" do
+        apply!(Puppet::Type.type(:sshd_config_match).new(
+          :name      => "User bar",
+          :target    => target,
+          :comment   => "bar is a user",
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("Match[Condition/User]/Settings/#comment")).to eq("User bar: bar is a user")
+        end
+      end
     end
 
     context "when deleting settings" do
@@ -103,6 +130,19 @@ describe provider_class do
 
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match("Match/Condition/User[.='anoncvs']").size).to eq(0)
+        end
+      end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:sshd_config_match).new(
+          :name      => "User anoncvs",
+          :ensure    => "absent",
+          :target    => target,
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Match[Condition/User]/Settings/#comment").size).to eq(0)
         end
       end
     end
@@ -121,6 +161,19 @@ describe provider_class do
           expect(aug.match("Match/Condition/User[.='anoncvs']")[0]).to end_with("/Match[2]/Condition/User")
           expect(aug.get("Match[2]/Condition/User")).to eq("anoncvs")
           expect(aug.get("Match[2]/Settings/X11Forwarding")).to eq("no")
+        end
+      end
+
+      it "should replace the comment" do
+        apply!(Puppet::Type.type(:sshd_config_match).new(
+          :name      => "User anoncvs",
+          :target    => target,
+          :provider  => "augeas",
+          :comment   => 'This is a different comment'
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("Match[Condition/User]/Settings/#comment")).to eq("User anoncvs: This is a different comment")
         end
       end
     end

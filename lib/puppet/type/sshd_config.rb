@@ -71,13 +71,13 @@ All other parameters take a string. When passing an array to other parameters, o
 
     def should_to_s(new_value)
       if provider.resource[:array_append]
-          # Merge the two arrays
-          is = @resource.property(:value).retrieve
-          is_arr = Array(is)
+        # Merge the two arrays
+        is = @resource.property(:value).retrieve
+        is_arr = Array(is)
 
-          super(is_arr | Array(new_value))
+        super(is_arr | Array(new_value))
       else
-          super(new_value)
+        super(new_value)
       end
     end
   end
@@ -117,7 +117,7 @@ The value can contain multiple conditions, concatenated together with
 whitespace.  This is used if the `Match` block has multiple criteria.
 
     condition => 'Host example.net User root'
-      "
+    "
 
     munge do |value|
       if value.is_a? Hash
@@ -128,6 +128,10 @@ whitespace.  This is used if the `Match` block has multiple criteria.
         Hash[*value_a]
       end
     end
+  end
+
+  newproperty(:comment) do
+    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
   end
 
   autorequire(:file) do

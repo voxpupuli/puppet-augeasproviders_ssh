@@ -41,6 +41,20 @@ describe provider_class do
       end
     end
 
+    it "should create new comment before entry" do
+      apply!(Puppet::Type.type(:sshd_config).new(
+        :name      => "DenyUsers",
+        :value     => "example_user",
+        :target    => target,
+        :provider  => "augeas",
+        :comment   => 'Deny example_user access'
+      ))
+
+      aug_open(target, "Sshd.lns") do |aug|
+        expect(aug.get("#comment[following-sibling::DenyUsers][last()]")).to eq("DenyUsers: Deny example_user access")
+      end
+    end
+
     it "should create a simple entry for GSSAPIKexAlgorithms" do
       apply!(Puppet::Type.type(:sshd_config).new(
         :name     => "GSSAPIKexAlgorithms",
@@ -204,7 +218,7 @@ describe provider_class do
           { "Subsystem"
             { "sftp" = "/usr/libexec/openssh/sftp-server" } }
           { "#comment" = "Example of overriding settings on a per-user basis" }
-        ')
+                        ')
       end
 
       it "should add it next to commented out entry with different case" do
@@ -229,7 +243,7 @@ describe provider_class do
             { "sftp" = "/usr/libexec/openssh/sftp-server" }
           }
           { "#comment" = "Example of overriding settings on a per-user basis" }
-        ')
+                        ')
       end
 
       it "should create an array entry" do
@@ -243,6 +257,19 @@ describe provider_class do
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("AllowUsers/1")).to eq("ssh")
           expect(aug.get("AllowUsers/2")).to eq("foo")
+        end
+      end
+
+      it "should create new comment before entry" do
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name      => "syslogFacility",
+          :target    => target,
+          :provider  => "augeas",
+          :comment   => 'more secure'
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("#comment[following-sibling::SyslogFacility][last()]")).to eq("syslogFacility: more secure")
         end
       end
 
@@ -314,6 +341,19 @@ describe provider_class do
 
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.match(expr)).to eq([])
+        end
+      end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name      => "AllowGroups",
+          :ensure    => "absent",
+          :target    => target,
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.match("VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
         end
       end
     end
@@ -392,6 +432,20 @@ describe provider_class do
         end
       end
 
+      it "should replace the comment" do
+        apply!(Puppet::Type.type(:sshd_config).new(
+          :name      => "SyslogFacility",
+          :value     => "AUTHPRIV",
+          :target    => target,
+          :provider  => "augeas",
+          :comment   => 'This is a different comment'
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("#comment[following-sibling::SyslogFacility][last()]")).to eq("SyslogFacility: This is a different comment")
+        end
+      end
+
       it "should replace settings case insensitively" do
         apply!(Puppet::Type.type(:sshd_config).new(
           :name     => "PaSswordaUtheNticAtion",
@@ -407,20 +461,20 @@ describe provider_class do
       end
 
       context "when using array_append" do
-          it "should not remove existing values" do
-              apply!(Puppet::Type.type(:sshd_config).new(
-                  :name         => "AcceptEnv",
-                  :value        => ["BAR", "LC_TIME"],
-                  :array_append => true,
-                  :target       => target,
-                  :provider     => "augeas"
-              ))
+        it "should not remove existing values" do
+          apply!(Puppet::Type.type(:sshd_config).new(
+            :name         => "AcceptEnv",
+            :value        => ["BAR", "LC_TIME"],
+            :array_append => true,
+            :target       => target,
+            :provider     => "augeas"
+          ))
 
-              aug_open(target, "Sshd.lns") do |aug|
-                  expect(aug.match("AcceptEnv/*").size).to eq(17)
-                  expect(aug.get("AcceptEnv/17")).to eq("BAR")
-              end
+          aug_open(target, "Sshd.lns") do |aug|
+            expect(aug.match("AcceptEnv/*").size).to eq(17)
+            expect(aug.get("AcceptEnv/17")).to eq("BAR")
           end
+        end
       end
     end
   end
@@ -505,7 +559,7 @@ describe provider_class do
           { "#comment" = "override default of no subsystems" }
           { "Subsystem"
             { "sftp" = "/usr/libexec/openssh/sftp-server" } }
-        ')
+                        ')
       end
 
       it "should insert Port before the first ListenAddress" do

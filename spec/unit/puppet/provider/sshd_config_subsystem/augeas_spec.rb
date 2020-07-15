@@ -26,6 +26,20 @@ describe provider_class do
         expect(aug.get("Subsystem/sftp")).to eq("/usr/lib/openssh/sftp-server")
       end
     end
+
+    it "should create new comment before entry" do
+      apply!(Puppet::Type.type(:sshd_config_subsystem).new(
+        :name      => "sftp",
+        :command  => "/usr/lib/openssh/sftp-server",
+        :target   => target,
+        :provider => "augeas",
+        :comment   => 'Use the external subsystem'
+      ))
+
+      aug_open(target, "Sshd.lns") do |aug|
+        expect(aug.get("#comment[following-sibling::Subsystem[sftp]]")).to eq("sftp: Use the external subsystem")
+      end
+    end
   end
 
   context "with full file" do
@@ -44,7 +58,7 @@ describe provider_class do
 
       expect(inst.size).to eq(1)
       expect(inst[0]).to eq({:name=>"sftp", :ensure=>:present,
-	                 :command=>"/usr/libexec/openssh/sftp-server"})
+                             :command=>"/usr/libexec/openssh/sftp-server"})
     end
 
     describe "when creating settings" do
@@ -58,6 +72,20 @@ describe provider_class do
 
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("Subsystem/mysub")).to eq("/bin/bash")
+        end
+      end
+
+      it "should create new comment before entry" do
+        apply!(Puppet::Type.type(:sshd_config_subsystem).new(
+          :name      => "sftp2",
+          :command  => "/usr/lib/openssh/sftp-server2",
+          :target   => target,
+          :provider => "augeas",
+          :comment   => 'Use the external subsystem'
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("#comment[following-sibling::Subsystem[sftp2]][last()]")).to eq("sftp2: Use the external subsystem")
         end
       end
     end
@@ -80,6 +108,19 @@ describe provider_class do
           expect(aug.match(expr)).to eq([])
         end
       end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:sshd_config_subsystem).new(
+          :name      => "sftp",
+          :command  => "/usr/lib/openssh/sftp-server",
+          :target   => target,
+          :provider => "augeas",
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("#comment[following-sibling::Subsystem[sftp][1]]")).to eq(nil)
+        end
+      end
     end
 
     describe "when updating settings" do
@@ -93,6 +134,20 @@ describe provider_class do
 
         aug_open(target, "Sshd.lns") do |aug|
           expect(aug.get("Subsystem/sftp")).to eq("/bin/bash")
+        end
+      end
+
+      it "should replace the comment" do
+        apply!(Puppet::Type.type(:sshd_config_subsystem).new(
+          :name      => "sftp",
+          :command  => "/usr/lib/openssh/sftp-server",
+          :target   => target,
+          :provider => "augeas",
+          :comment   => 'A different comment'
+        ))
+
+        aug_open(target, "Sshd.lns") do |aug|
+          expect(aug.get("#comment[following-sibling::Subsystem[sftp]][last()]")).to eq("sftp: A different comment")
         end
       end
     end

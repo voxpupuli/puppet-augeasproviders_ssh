@@ -23,7 +23,8 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   end
 
   def self.path(resource)
-    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
+    path = "$target/*"
+    path += "[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
     resource[:condition].each do |c, v|
       path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
     end
@@ -104,6 +105,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def position!
     augopen! do |aug|
       self.class.position!(aug, resource)
+      self.comment = resource[:comment]
     end
   end
 
@@ -115,12 +117,35 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
         aug.set("$resource/Condition/#{c}", v)
       end
       aug.clear("$resource/Settings")
-      # At least one entry is mandatory (in the lens at least)
-      aug.set("$resource/Settings/#comment", 'Created by Puppet')
 
       self.class.position!(aug, resource) \
         if !self.class.in_position?(aug, resource) and resource[:position]
+
+          # At least one entry is mandatory (in the lens at least)
+          self.comment = resource[:comment]
+      end
+    end
+
+    def comment
+      augopen do |aug|
+        comment = aug.get("$resource/Settings/#comment[1]")
+        comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
+        comment || ""
+      end
+    end
+
+    def comment=(value)
+      augopen! do |aug|
+        cmtnode = "$resource/Settings/#comment[1]"
+
+        if aug.match(cmtnode).empty?
+          if aug.match("$resource/Settings/*").any?
+            # Insert before first entry
+            aug.insert("$resource/Settings/*[1]", "#comment", true)
+          end
+        end
+
+        aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")
+      end
     end
   end
-end
-

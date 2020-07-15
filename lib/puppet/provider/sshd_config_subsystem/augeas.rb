@@ -31,13 +31,16 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
     end
   end
 
-  define_aug_method!(:create) do |aug, resource|
+  def create
     key = resource[:name]
-    unless aug.match("$target/Match").empty?
-      aug.insert("$target/Match[1]", "Subsystem", true)
-      aug.clear("$target/Subsystem[last()]/#{key}")
+    augopen! do |aug|
+      unless aug.match("$target/Match").empty?
+        aug.insert("$target/Match[1]", "Subsystem", true)
+        aug.clear("$target/Subsystem[last()]/#{key}")
+      end
+      aug.set("$target/Subsystem/#{resource[:name]}", resource[:command])
+      self.comment = resource[:comment] if resource[:comment]
     end
-    aug.set("$target/Subsystem/#{resource[:name]}", resource[:command])
   end
 
   define_aug_method!(:destroy) do |aug, resource|
@@ -46,4 +49,28 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, :parent => Puppet::Ty
   end
 
   attr_aug_accessor(:command, :label => :resource)
+
+
+  def comment
+    augopen do |aug|
+      comment = aug.get("$target/#comment[following-sibling::*[1][label() =~ regexp('Subsystem', 'i') and #{resource[:name]}]]")
+      comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
+      comment || ""
+    end
+  end
+
+  def comment=(value)
+    augopen! do |aug|
+      cmtnode = "$target/#comment[following-sibling::*[1][label() =~ regexp('Subsystem', 'i') and #{resource[:name]}]]"
+
+      if value.empty?
+        aug.rm(cmtnode)
+      else
+        if aug.match(cmtnode).empty?
+          aug.insert("$target/*[label()=~regexp('Subsystem', 'i') and #{resource[:name]}]", "#comment", true)
+        end
+        aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")
+      end
+    end
+  end
 end
