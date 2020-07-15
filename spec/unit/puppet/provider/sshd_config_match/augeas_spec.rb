@@ -132,6 +132,20 @@ describe provider_class do
           expect(aug.match("Match/Condition/User[.='anoncvs']").size).to eq(0)
         end
       end
+
+      it "should delete a comment" do
+        apply!(Puppet::Type.type(:ssh_config).new(
+          :name      => "VisualHostKey",
+          :ensure    => "absent",
+          :host      => "*",
+          :target    => target,
+          :provider  => "augeas"
+        ))
+
+        aug_open(target, "Ssh.lns") do |aug|
+          expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
+        end
+      end
     end
 
     context "when updating settings" do
