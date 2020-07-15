@@ -134,7 +134,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
     augopen do |aug|
       cmtnode = "$target/#comment[following-sibling::*[1]"+self.class.filter(resource)+"]"
       comment = aug.get(cmtnode)
-      comment.sub!(/^#{resource[:condition]}:\s*/, "") if comment
+      comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
       comment || ""
     end
   end
@@ -142,15 +142,15 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   def comment=(value)
     augopen! do |aug|
       cmtnode = "$target/#comment[following-sibling::*[1]"+self.class.filter(resource)+"]"
+
       if value.empty?
         aug.rm(cmtnode)
       else
         if aug.match(cmtnode).empty?
           aug.insert(self.class.path(resource), "#comment", true)
         end
-        aug.set(cmtnode, "#{resource[:condition]}: #{resource[:comment]}")
+        aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")
       end
     end
   end
 end
-

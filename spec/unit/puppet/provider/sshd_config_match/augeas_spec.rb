@@ -37,7 +37,7 @@ describe provider_class do
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
-        expect(aug.get("#comment[following-sibling::Match[Condition/Host]]")).to eq("Host foo: Manage host foo")
+        expect(aug.get("#comment[following-sibling::Match[Condition/Host]]")).to eq("Host foo: manage host foo")
       end
     end
   end
@@ -106,11 +106,11 @@ describe provider_class do
       end
 
       it "should create new comment before entry" do
-        apply!(Puppet::Type.type(:ssh_config).new(
+        apply!(Puppet::Type.type(:sshd_config_match).new(
           :name      => "User bar",
           :target    => target,
-          :provider  => "augeas",
-          :comment   => 'bar is a user'
+          :comment   => "bar is a user",
+          :provider  => "augeas"
         ))
 
         aug_open(target, "Sshd.lns") do |aug|
