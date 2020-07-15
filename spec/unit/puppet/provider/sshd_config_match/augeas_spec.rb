@@ -31,8 +31,9 @@ describe provider_class do
       apply!(Puppet::Type.type(:sshd_config_match).new(
         :name      => "Host foo",
         :target    => target,
-        :provider  => "augeas",
-        :comment   => 'manage host foo'
+        :ensure    => :present,
+        :comment   => "manage host foo",
+        :provider  => "augeas"
       ))
 
       aug_open(target, "Sshd.lns") do |aug|
