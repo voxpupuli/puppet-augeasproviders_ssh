@@ -23,11 +23,16 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
   end
 
   def self.path(resource)
-    path = "$target/*[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
+    path = "$target/*"
+    path += filter(resource)
+  end
+
+  def self.filter(resource)
+    filter = "[label()=~regexp('match', 'i') and *[label()=~regexp('condition', 'i') and count(*)=#{resource[:condition].keys.size}]"
     resource[:condition].each do |c, v|
-      path += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
+      filter += "[*[label()=~regexp('#{c}', 'i')]='#{v}']"
     end
-    path += "]"
+    filter += "]"
   end
 
   resource_path do |resource|
@@ -120,25 +125,15 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
 
       self.class.position!(aug, resource) \
         if !self.class.in_position?(aug, resource) and resource[:position]
-    end
-  end
 
-  def after_comment_node(resource)
-    if resource[:ensure] == :unset
-      if unset_seq?
-        "@unset[*='#{resource[:name]}']"
-      else
-        "@unset[.='#{resource[:name]}']"
-      end
-    else
-      resource[:name]
+      self.comment = resource[:comment] if resource[:comment]
     end
   end
 
   def comment
     augopen do |aug|
-      after_comment = after_comment_node(resource)
-      comment = aug.get("$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]")
+      cmtnode = "$target/#comment[following-sibling::*[1]"+self.class.filter(resource)+"]"
+      comment = aug.get(cmtnode)
       comment.sub!(/^#{resource[:name]}:\s*/, "") if comment
       comment || ""
     end
@@ -146,18 +141,16 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, :parent => Puppet::Type.t
 
   def comment=(value)
     augopen! do |aug|
-      after_comment = after_comment_node(resource)
-      cmtnode = "$target/#comment[following-sibling::*[1][self::#{after_comment}]][. =~ regexp('#{resource[:name]}:.*')]"
+      cmtnode = "$target/#comment[following-sibling::*[1]"+self.class.filter(resource)+"]"
+
       if value.empty?
         aug.rm(cmtnode)
       else
         if aug.match(cmtnode).empty?
-          aug.insert("$target/#{resource[:name]}", "#comment", true)
+          aug.insert(self.class.path(resource), "#comment", true)
         end
-        aug.set("$target/#comment[following-sibling::*[1][self::#{after_comment}]]",
-                "#{resource[:name]}: #{resource[:comment]}")
+        aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")
       end
     end
   end
 end
-

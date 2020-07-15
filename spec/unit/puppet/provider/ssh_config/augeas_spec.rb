@@ -201,6 +201,7 @@ describe provider_class do
           expect(aug.get("Host[.='example.net']/SendEnv/2")).to eq("LANG")
         end
       end
+
       it "should create new comment before entry" do
         apply!(Puppet::Type.type(:ssh_config).new(
           :name      => "DenyUsers",
