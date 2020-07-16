@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0
+
+- Deprecate support for Augeas < 1.0.0
+- Update supported Ubuntu versions
+- sshd_config: close array regexp (GH #54), fix GH #52
+- sshd_config_match: remove duplicated condition param in test (GH #58)
+- sshkey: do not test type update, it's a parameter in Puppet 6 (GH #59) 
+- Add support for comments in types and providers (GH #61)
+- Update copyright and authors infos
+
 ## 3.3.0
 
 - Add EL8 support
