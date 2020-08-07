@@ -494,16 +494,15 @@ describe provider_class do
       it 'replaces multiple single-value settings' do
         apply!(Puppet::Type.type(:sshd_config).new(
                  name: 'ListenAddress',
-                 value: ['192.168.1.1', '192.168.2.1', '192.168.3.1'],
+                 value: ['192.168.1.1', '192.168.2.1'],
                  target: target,
                  provider: 'augeas',
         ))
 
         aug_open(target, 'Sshd.lns') do |aug|
-          expect(aug.match('ListenAddress').size).to eq(3)
+          expect(aug.match('ListenAddress').size).to eq(2)
           expect(aug.get('ListenAddress[1]')).to eq('192.168.1.1')
           expect(aug.get('ListenAddress[2]')).to eq('192.168.2.1')
-          expect(aug.get('ListenAddress[3]')).to eq('192.168.3.1')
         end
       end
 
