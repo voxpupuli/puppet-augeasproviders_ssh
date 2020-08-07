@@ -4,6 +4,7 @@ dist: xenial
 language: ruby
 cache: bundler
 before_install:
+  - travis_retry ./.travis.sh
   - bundle -v
   - rm -f Gemfile.lock
   - "# Update system gems if requested. This is useful to temporarily workaround troubles in the test runner"
@@ -17,6 +18,9 @@ script:
 bundler_args: --without system_tests
 rvm:
   - 2.5.7
+env:
+  global:
+    - AUGEAS_LENS_LIB=lib/augeas/lenses:spec/fixtures/augeas/lenses
 stages:
   - static
   - spec
@@ -47,3 +51,12 @@ branches:
     - /^v\d/
 notifications:
   email: false
+deploy:
+  provider: puppetforge
+  username: herculesteam
+  password:
+    secure: "coX6r+20OFHKTVGYb4E+1lr4AFCG5h1GeqjWY0Esfz5vAs42d/ZbLzwP6j19VXWehBitGRWkBerWU9ZIneIcPUQlRhRRCWt+XCv+6XZREdq2610RIZnva4NsLD/SCzXdC9gSfIWvGnI9fWNAQS/stgC/jkyCkFNn2i0s7qWEvA0="
+  on:
+    tags: true
+    all_branches: true
+    condition: "$DEPLOY_TO_FORGE = yes"
