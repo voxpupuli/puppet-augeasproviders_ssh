@@ -62,47 +62,55 @@ Puppet::Type.type(:ssh_config).provide(:augeas, parent: Puppet::Type.type(:augea
 
   def self.set_value(aug, base, path, label, value)
     if label =~ %r{Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile}i
-      aug.rm("#{path}/*")
-      # In case there is more than one entry, keep only the first one
-      aug.rm("#{path}[position() != 1]")
-      count = 0
-      value.each do |v|
-        count += 1
-        aug.set("#{path}/#{count}", v)
-      end
+      set_array_value(aug, path, value)
     else
-      # Normal setting: one value per entry
-      value = value.clone
-
-      # Change any existing settings with this name
-      lastsp = nil
-      aug.match(path).each do |sp|
-        val = value.shift
-        if val.nil?
-          aug.rm(sp)
-        else
-          aug.set(sp, val)
-          lastsp = sp
-        end
-      end
-
-      # Insert new values for the rest
-      value.each do |v|
-        if lastsp
-          # After the most recent same setting (lastsp)
-          aug.insert(lastsp, label, false)
-        else
-          # Prefer to create the node next to a commented out entry
-          commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?')]")
-          unless commented.empty?
-            aug.insert(commented.first, label, false)
-          end
-        end
-        aug.set("#{path}[last()]", v)
-        lastsp = aug.match("#{path}[last()]")[0]
-      end
-      aug.defvar('resource', path)
+      set_simple_value(aug, base, path, label, value)
     end
+  end
+
+  def self.set_array_value(aug, path, value)
+    aug.rm("#{path}/*")
+    # In case there is more than one entry, keep only the first one
+    aug.rm("#{path}[position() != 1]")
+    count = 0
+    value.each do |v|
+      count += 1
+      aug.set("#{path}/#{count}", v)
+    end
+  end
+
+  def self.set_simple_value(aug, base, path, label, value)
+    # Normal setting: one value per entry
+    value = value.clone
+
+    # Change any existing settings with this name
+    lastsp = nil
+    aug.match(path).each do |sp|
+      val = value.shift
+      if val.nil?
+        aug.rm(sp)
+      else
+        aug.set(sp, val)
+        lastsp = sp
+      end
+    end
+
+    # Insert new values for the rest
+    value.each do |v|
+      if lastsp
+        # After the most recent same setting (lastsp)
+        aug.insert(lastsp, label, false)
+      else
+        # Prefer to create the node next to a commented out entry
+        commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?')]")
+        unless commented.empty?
+          aug.insert(commented.first, label, false)
+        end
+      end
+      aug.set("#{path}[last()]", v)
+      lastsp = aug.match("#{path}[last()]")[0]
+    end
+    aug.defvar('resource', path)
   end
 
   def create
