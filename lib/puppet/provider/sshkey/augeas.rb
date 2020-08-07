@@ -2,7 +2,7 @@
 
 # Alternative Augeas-based providers for Puppet
 #
-# Copyright (c) 2015 Raphaël Pinson
+# Copyright (c) 2015-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
 class Puppet::Type::Sshkey
@@ -67,11 +67,11 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
   def self.setvars(aug, resource = nil)
     aug.set('/augeas/context', "/files#{target(resource)}")
     aug.defnode('target', "/files#{target(resource)}", nil)
-    if resource
-      # HACK: set to /non/existent so that exists? is happy
-      path = find_resource(aug, resource[:name]) || '/non/existent'
-      aug.defvar('resource', path)
-    end
+    return unless resource
+
+    # HACK: set to /non/existent so that exists? is happy
+    path = find_resource(aug, resource[:name]) || '/non/existent'
+    aug.defvar('resource', path)
   end
 
   def self.find_resource(aug, hostname)
@@ -83,7 +83,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
 
       next unless hashed?(hostnames)
       require 'base64'
-      dummy, one, salt64, hostname64 = hostnames.split[0].split('|')
+      _dummy, _one, salt64, hostname64 = hostnames.split[0].split('|')
       salt = Base64.decode64(salt64)
       return entry if hostname64 == Base64.encode64(OpenSSL::HMAC.digest('sha1', salt, hostname)).strip
     end
@@ -219,10 +219,10 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
     raise(Puppet::Error, "#{label} is mandatory") unless value
     aug.set("$resource/#{label}", value.to_s)
 
-    if resource_hashed?(aug) && resource[:host_aliases]
-      resource[:host_aliases].each do |h|
-        aug.set("#{self.class.find_resource(aug, h)}/#{label}", value.to_s)
-      end
+    return unless resource_hashed?(aug) && resource[:host_aliases]
+
+    resource[:host_aliases].each do |h|
+      aug.set("#{self.class.find_resource(aug, h)}/#{label}", value.to_s)
     end
   end
 
