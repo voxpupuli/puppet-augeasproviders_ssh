@@ -1,5 +1,3 @@
-#!/usr/bin/env rspec
-
 require 'spec_helper'
 
 ssh_config_type = Puppet::Type.type(:ssh_config)

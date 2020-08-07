@@ -1,5 +1,3 @@
-#!/usr/bin/env rspec
-
 require 'spec_helper'
 
 sshd_config_match_type = Puppet::Type.type(:sshd_config_match)
