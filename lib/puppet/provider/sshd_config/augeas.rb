@@ -109,9 +109,9 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
       resources = []
       # Ordinary settings outside of match blocks
       # Find all unique setting names, then find all instances of it
-      settings = aug.match("$target/*[label()!='Match']").map { |spath|
-        path_label(aug, spath)
-      }.uniq.reject { |name| name.start_with?('#', '@') }
+      settings = aug.match("$target/*[label()!='Match']")
+                    .map { |spath| path_label(aug, spath) }
+                    .uniq.reject { |name| name.start_with?('#', '@') }
 
       settings.each do |name|
         next if name.casecmp('subsystem').zero?
@@ -130,9 +130,9 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
         end
         cond_str = conditions.join(' ')
 
-        settings = aug.match("#{mpath}/Settings/*").map { |spath|
-          path_label(aug, spath)
-        }.uniq.reject { |name| name.start_with?('#', '@') }
+        settings = aug.match("#{mpath}/Settings/*")
+                      .map { |spath| path_label(aug, spath) }
+                      .uniq.reject { |name| name.start_with?('#', '@') }
 
         settings.each do |name|
           next if name.casecmp('subsystem').zero?
