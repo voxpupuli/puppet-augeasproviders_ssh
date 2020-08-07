@@ -5,6 +5,7 @@
 # Copyright (c) 2015-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
+# Patch sshkey type to add feature and associated param
 class Puppet::Type::Sshkey
   feature :hashed_hostnames,
           'The provider supports hashed hostnames.'
@@ -14,6 +15,7 @@ class Puppet::Type::Sshkey
   end
 end
 
+# Patch sshkey's ensure parameter to add hashed value
 class Puppet::Type::Sshkey::Ensure
   newvalue(:hashed) do
     current = retrieve
