@@ -1,7 +1,7 @@
 ---
 .travis.yml:
   user: "herculesteam"
-  secure: "coX6r+20OFHKTVGYb4E+1lr4AFCG5h1GeqjWY0Esfz5vAs42d/ZbLzwP6j19VXWehBitGRWkBerWU9ZIneIcPUQlRhRRCWt+XCv+6XZREdq2610RIZnva4NsLD/SCzXdC9gSfIWvGnI9fWNAQS/stgC/jkyCkFNn2i0s7qWEvA0="
+  secure: "ctbh1VqtkZnqCWRa5YUONzS4LuJ3h36wOcn8pCyxNtdOcHNvbFYWiFaVIlgJXkkwFIRU7hnhpIXZ9bRCLqmvz3awVzc7baThgx2Asi5jkMlltXWIuCt8ZPHHpLNSEa0zHY88o7LUqTuvUCbG3EINYoA7o6ShBUV5vJ8UE6IesqU="
   before_install_pre:
     - "travis_retry ./.travis.sh"
   global_env:
