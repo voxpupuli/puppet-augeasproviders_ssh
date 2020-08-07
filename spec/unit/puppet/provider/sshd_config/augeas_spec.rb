@@ -170,7 +170,14 @@ describe provider_class do
       expect(inst[3]).to eq(name: 'PermitRootLogin', ensure: :present, value: ['without-password'], condition: :absent)
       expect(inst[4]).to eq(name: 'PasswordAuthentication', ensure: :present, value: ['yes'], condition: :absent)
       expect(inst[8]).to eq(name: 'UsePAM', ensure: :present, value: ['yes'], condition: :absent)
-      expect(inst[9]).to eq(name: 'AcceptEnv', ensure: :present, value: ['LANG', 'LC_CTYPE', 'LC_NUMERIC', 'LC_TIME', 'LC_COLLATE', 'LC_MONETARY', 'LC_MESSAGES', 'LC_PAPER', 'LC_NAME', 'LC_ADDRESS', 'LC_TELEPHONE', 'LC_MEASUREMENT', 'LC_IDENTIFICATION', 'LC_ALL', 'LANGUAGE', 'XMODIFIERS'], condition: :absent)
+      expect(inst[9]).to eq(
+        name: 'AcceptEnv', ensure: :present,
+        value: ['LANG', 'LC_CTYPE', 'LC_NUMERIC', 'LC_TIME', 'LC_COLLATE',
+                'LC_MONETARY', 'LC_MESSAGES', 'LC_PAPER', 'LC_NAME', 'LC_ADDRESS',
+                'LC_TELEPHONE', 'LC_MEASUREMENT', 'LC_IDENTIFICATION', 'LC_ALL',
+                'LANGUAGE', 'XMODIFIERS'],
+        condition: :absent
+      )
       expect(inst[11]).to eq(name: 'X11Forwarding', ensure: :present, value: ['no'], condition: 'User anoncvs')
       expect(inst[14]).to eq(name: 'AllowAgentForwarding', ensure: :present, value: ['no'], condition: 'Host *.example.net User *')
     end
@@ -605,6 +612,7 @@ describe provider_class do
                     provider: 'augeas',
       ))
 
+      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)
