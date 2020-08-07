@@ -10,159 +10,159 @@ describe provider_class do
     FileTest.stubs(:exist?).with('/etc/ssh/sshd_config').returns true
   end
 
-  context "with empty file" do
-    let(:tmptarget) { aug_fixture("empty") }
+  context 'with empty file' do
+    let(:tmptarget) { aug_fixture('empty') }
     let(:target) { tmptarget.path }
 
-    it "should create simple new entry" do
+    it 'creates simple new entry' do
       apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-        :name     => "sftp",
-        :command  => "/usr/lib/openssh/sftp-server",
-        :target   => target,
-        :provider => "augeas"
+               name: 'sftp',
+               command: '/usr/lib/openssh/sftp-server',
+               target: target,
+               provider: 'augeas',
       ))
 
-      aug_open(target, "Sshd.lns") do |aug|
-        expect(aug.get("Subsystem/sftp")).to eq("/usr/lib/openssh/sftp-server")
+      aug_open(target, 'Sshd.lns') do |aug|
+        expect(aug.get('Subsystem/sftp')).to eq('/usr/lib/openssh/sftp-server')
       end
     end
 
-    it "should create new comment before entry" do
+    it 'creates new comment before entry' do
       apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-        :name      => "sftp",
-        :command  => "/usr/lib/openssh/sftp-server",
-        :target   => target,
-        :provider => "augeas",
-        :comment   => 'Use the external subsystem'
+               name: 'sftp',
+               command: '/usr/lib/openssh/sftp-server',
+               target: target,
+               provider: 'augeas',
+               comment: 'Use the external subsystem',
       ))
 
-      aug_open(target, "Sshd.lns") do |aug|
-        expect(aug.get("#comment[following-sibling::Subsystem[sftp]]")).to eq("sftp: Use the external subsystem")
+      aug_open(target, 'Sshd.lns') do |aug|
+        expect(aug.get('#comment[following-sibling::Subsystem[sftp]]')).to eq('sftp: Use the external subsystem')
       end
     end
   end
 
-  context "with full file" do
-    let(:tmptarget) { aug_fixture("full") }
+  context 'with full file' do
+    let(:tmptarget) { aug_fixture('full') }
     let(:target) { tmptarget.path }
 
-    it "should list instances" do
+    it 'lists instances' do
       provider_class.stubs(:target).returns(target)
-      inst = provider_class.instances.map { |p|
+      inst = provider_class.instances.map do |p|
         {
-          :name    => p.get(:name),
-          :ensure  => p.get(:ensure),
-          :command => p.get(:command),
+          name: p.get(:name),
+          ensure: p.get(:ensure),
+          command: p.get(:command),
         }
-      }
+      end
 
       expect(inst.size).to eq(1)
-      expect(inst[0]).to eq({:name=>"sftp", :ensure=>:present,
-                             :command=>"/usr/libexec/openssh/sftp-server"})
+      expect(inst[0]).to eq(name: 'sftp', ensure: :present,
+                            command: '/usr/libexec/openssh/sftp-server')
     end
 
-    describe "when creating settings" do
-      it "should add it before Match block" do
+    describe 'when creating settings' do
+      it 'adds it before Match block' do
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name     => "mysub",
-          :command  => "/bin/bash",
-          :target   => target,
-          :provider => "augeas"
+                 name: 'mysub',
+                 command: '/bin/bash',
+                 target: target,
+                 provider: 'augeas',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("Subsystem/mysub")).to eq("/bin/bash")
+        aug_open(target, 'Sshd.lns') do |aug|
+          expect(aug.get('Subsystem/mysub')).to eq('/bin/bash')
         end
       end
 
-      it "should create new comment before entry" do
+      it 'creates new comment before entry' do
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name      => "sftp2",
-          :command  => "/usr/lib/openssh/sftp-server2",
-          :target   => target,
-          :provider => "augeas",
-          :comment   => 'Use the external subsystem'
+                 name: 'sftp2',
+                 command: '/usr/lib/openssh/sftp-server2',
+                 target: target,
+                 provider: 'augeas',
+                 comment: 'Use the external subsystem',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("#comment[following-sibling::Subsystem[sftp2]][last()]")).to eq("sftp2: Use the external subsystem")
+        aug_open(target, 'Sshd.lns') do |aug|
+          expect(aug.get('#comment[following-sibling::Subsystem[sftp2]][last()]')).to eq('sftp2: Use the external subsystem')
         end
       end
     end
 
-    describe "when deleting settings" do
-      it "should delete a setting" do
-        expr = "Subsystem/sftp"
-        aug_open(target, "Sshd.lns") do |aug|
+    describe 'when deleting settings' do
+      it 'deletes a setting' do
+        expr = 'Subsystem/sftp'
+        aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).not_to eq([])
         end
 
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name     => "sftp",
-          :ensure   => "absent",
-          :target   => target,
-          :provider => "augeas"
+                 name: 'sftp',
+                 ensure: 'absent',
+                 target: target,
+                 provider: 'augeas',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
+        aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).to eq([])
         end
       end
 
-      it "should delete a comment" do
+      it 'deletes a comment' do
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name      => "sftp",
-          :command  => "/usr/lib/openssh/sftp-server",
-          :target   => target,
-          :provider => "augeas",
+                 name: 'sftp',
+                 command: '/usr/lib/openssh/sftp-server',
+                 target: target,
+                 provider: 'augeas',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("#comment[following-sibling::Subsystem[sftp][1]]")).to eq(nil)
+        aug_open(target, 'Sshd.lns') do |aug|
+          expect(aug.get('#comment[following-sibling::Subsystem[sftp][1]]')).to eq(nil)
         end
       end
     end
 
-    describe "when updating settings" do
-      it "should replace a setting" do
+    describe 'when updating settings' do
+      it 'replaces a setting' do
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name     => "sftp",
-          :command  => "/bin/bash",
-          :target   => target,
-          :provider => "augeas"
+                 name: 'sftp',
+                 command: '/bin/bash',
+                 target: target,
+                 provider: 'augeas',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("Subsystem/sftp")).to eq("/bin/bash")
+        aug_open(target, 'Sshd.lns') do |aug|
+          expect(aug.get('Subsystem/sftp')).to eq('/bin/bash')
         end
       end
 
-      it "should replace the comment" do
+      it 'replaces the comment' do
         apply!(Puppet::Type.type(:sshd_config_subsystem).new(
-          :name      => "sftp",
-          :command  => "/usr/lib/openssh/sftp-server",
-          :target   => target,
-          :provider => "augeas",
-          :comment   => 'A different comment'
+                 name: 'sftp',
+                 command: '/usr/lib/openssh/sftp-server',
+                 target: target,
+                 provider: 'augeas',
+                 comment: 'A different comment',
         ))
 
-        aug_open(target, "Sshd.lns") do |aug|
-          expect(aug.get("#comment[following-sibling::Subsystem[sftp]][last()]")).to eq("sftp: A different comment")
+        aug_open(target, 'Sshd.lns') do |aug|
+          expect(aug.get('#comment[following-sibling::Subsystem[sftp]][last()]')).to eq('sftp: A different comment')
         end
       end
     end
   end
 
-  context "with broken file" do
-    let(:tmptarget) { aug_fixture("broken") }
+  context 'with broken file' do
+    let(:tmptarget) { aug_fixture('broken') }
     let(:target) { tmptarget.path }
 
-    it "should fail to load" do
+    it 'fails to load' do
       txn = apply(Puppet::Type.type(:sshd_config_subsystem).new(
-        :name     => "sftp",
-        :command  => "/bin/bash",
-        :target   => target,
-        :provider => "augeas"
+                    name: 'sftp',
+                    command: '/bin/bash',
+                    target: target,
+                    provider: 'augeas',
       ))
 
       expect(txn.any_failed?).not_to eq(nil)

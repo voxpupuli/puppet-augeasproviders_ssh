@@ -4,17 +4,17 @@
 # Licensed under the Apache License, Version 2.0
 
 Puppet::Type.newtype(:sshd_config_subsystem) do
-  @doc = "Manages Subsystem settings in an OpenSSH sshd_config file."
+  @doc = 'Manages Subsystem settings in an OpenSSH sshd_config file.'
 
   ensurable
 
   newparam(:name) do
-    desc "The name of the subsystem to set."
+    desc 'The name of the subsystem to set.'
     isnamevar
   end
 
   newproperty(:command) do
-    desc "The command to execute upon subsystem request."
+    desc 'The command to execute upon subsystem request.'
   end
 
   newparam(:target) do
@@ -23,7 +23,7 @@ Puppet::Type.newtype(:sshd_config_subsystem) do
   end
 
   newproperty(:comment) do
-    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
+    desc 'Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not.'
   end
 
   autorequire(:file) do

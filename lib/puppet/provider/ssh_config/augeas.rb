@@ -1,23 +1,23 @@
 # coding: utf-8
+
 # Alternative Augeas-based providers for Puppet
 #
 # Copyright (c) 2012 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
-
-raise("Missing augeasproviders_core dependency") if Puppet::Type.type(:augeasprovider).nil?
-Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:augeasprovider).provider(:default)) do
-  desc "Uses Augeas API to update an ssh_config parameter"
+raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
+Puppet::Type.type(:ssh_config).provide(:augeas, parent: Puppet::Type.type(:augeasprovider).provider(:default)) do
+  desc 'Uses Augeas API to update an ssh_config parameter'
 
   default_file { '/etc/ssh/ssh_config' }
 
   lens { 'Ssh.lns' }
 
-  confine :feature => :augeas
+  confine feature: :augeas
 
   resource_path do |resource|
-    base = self.base_path(resource)
-    key = resource[:key] ? resource[:key] : resource[:name]
+    base = base_path(resource)
+    key = (resource[:key]) ? resource[:key] : resource[:name]
     "#{base}/*[label()=~regexp('#{key}', 'i')]"
   end
 
@@ -26,23 +26,21 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
   end
 
   def self.instances
-    augopen do |aug,path|
+    augopen do |aug, _path|
       resources = []
       aug.match('$target/Host').each do |hpath|
         aug.match("#{hpath}/*").each do |kpath|
           label = path_label(aug, kpath)
-          next if label.start_with?("#")
+          next if label.start_with?('#')
 
           host = aug.get(hpath)
-          value = self.get_value(aug, kpath)
+          value = get_value(aug, kpath)
 
-          resources << new({
-            :ensure => :present,
-            :name   => label,
-            :key    => label,
-            :value  => value,
-            :host   => host
-          })
+          resources << new(ensure: :present,
+                           name: label,
+                           key: label,
+                           value: value,
+                           host: host)
         end
       end
       resources
@@ -50,7 +48,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
   end
 
   def self.get_value(aug, pathx)
-    aug.match(pathx).map do |vp|
+    aug.match(pathx).map { |vp|
       # Augeas lens does transparent multi-node (no counte reset) so check for any int
       if aug.match("#{vp}/*[label()=~regexp('[0-9]*')]").empty?
         aug.get(vp)
@@ -59,11 +57,11 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
           aug.get(svp)
         end
       end
-    end.flatten
+    }.flatten
   end
 
   def self.set_value(aug, base, path, label, value)
-    if label =~ /Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile/i
+    if label =~ %r{Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile}i
       aug.rm("#{path}/*")
       # In case there is more than one entry, keep only the first one
       aug.rm("#{path}[position() != 1]")
@@ -136,8 +134,8 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
     base_path = self.class.base_path(resource)
     augopen do |aug|
       comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{resource[:name]}', 'i')]][. =~ regexp('#{resource[:name]}:.*', 'i')]")
-      comment.sub!(/^#{resource[:name]}:\s*/i, "") if comment
-      comment || ""
+      comment.sub!(%r{^#{resource[:name]}:\s*}i, '') if comment
+      comment || ''
     end
   end
 
@@ -154,7 +152,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, :parent => Puppet::Type.type(:au
       aug.rm(cmtnode)
     else
       if aug.match(cmtnode).empty?
-        aug.insert('$resource', "#comment", true)
+        aug.insert('$resource', '#comment', true)
       end
       aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
               "#{name}: #{value}")

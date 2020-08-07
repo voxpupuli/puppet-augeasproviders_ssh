@@ -32,22 +32,22 @@ Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 # ticket https://tickets.puppetlabs.com/browse/MODULES-823
 #
 ver = Gem::Version.new(Puppet.version.split('-').first)
-if ver >= Gem::Version.new("2.7.20")
-    puts "augeasproviders: setting $LOAD_PATH to work around broken type autoloading"
-    Puppet.initialize_settings
+if ver >= Gem::Version.new('2.7.20')
+  puts 'augeasproviders: setting $LOAD_PATH to work around broken type autoloading'
+  Puppet.initialize_settings
+  $LOAD_PATH.unshift(
+    dir,
+    File.join(dir, 'fixtures/modules/augeasproviders_core/spec/lib'),
+    File.join(dir, 'fixtures/modules/augeasproviders_core/lib'),
+  )
+
+  if ver >= Gem::Version.new('6.0.0')
     $LOAD_PATH.unshift(
-        dir,
-        File.join(dir, 'fixtures/modules/augeasproviders_core/spec/lib'),
-        File.join(dir, 'fixtures/modules/augeasproviders_core/lib')
+      File.join(dir, 'fixtures/modules/sshkeys_core/lib'),
     )
+  end
 
-    if ver >= Gem::Version.new("6.0.0")
-        $LOAD_PATH.unshift(
-            File.join(dir, 'fixtures/modules/sshkeys_core/lib'),
-        )
-    end
-
-    $LOAD_PATH.unshift(File.join(dir, '..', 'lib'))
+  $LOAD_PATH.unshift(File.join(dir, '..', 'lib'))
 end
 
 require 'augeas_spec'

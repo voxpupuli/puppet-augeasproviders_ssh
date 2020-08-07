@@ -1,22 +1,22 @@
 # coding: utf-8
+
 # Alternative Augeas-based providers for Puppet
 #
 # Copyright (c) 2015 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
-
 class Puppet::Type::Sshkey
   feature :hashed_hostnames,
-    "The provider supports hashed hostnames."
+          'The provider supports hashed hostnames.'
 
-  newparam(:hash_hostname, :boolean => true, :required_features => :hashed_hostnames) do
+  newparam(:hash_hostname, boolean: true, required_features: :hashed_hostnames) do
     defaultto :false
   end
 end
 
 class Puppet::Type::Sshkey::Ensure
   newvalue(:hashed) do
-    current = self.retrieve
+    current = retrieve
     if current == :absent
       provider.create
     elsif !provider.is_hashed?
@@ -30,9 +30,9 @@ class Puppet::Type::Sshkey::Ensure
   end
 end
 
-raise("Missing augeasproviders_core dependency") if Puppet::Type.type(:augeasprovider).nil?
-Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeasprovider).provider(:default)) do
-  desc "Uses Augeas API to update SSH known_hosts entries"
+raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
+Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeasprovider).provider(:default)) do
+  desc 'Uses Augeas API to update SSH known_hosts entries'
 
   has_features :hashed_hostnames
 
@@ -40,26 +40,24 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
 
   lens { 'Known_Hosts.lns' }
 
-  confine :feature => :augeas
-  defaultfor :feature => :augeas
+  confine feature: :augeas
+  defaultfor feature: :augeas
 
   def self.instances
-    augopen do |aug, path|
+    augopen do |aug, _path|
       resources = []
       aug.match('$target/*[label()!="#comment"]').each do |spath|
         name = aug.get(spath)
         # We only list non-hashed entries
         next if name.start_with? '|1|'
         aliases = aug.match("#{spath}/alias").map { |apath| aug.get(apath) }
-        resources << new({
-          :ensure        => :present,
-          :name          => name,
-          :type          => aug.get("#{spath}/type"),
-          :key           => aug.get("#{spath}/key"),
-          :host_aliases  => aliases,
-          :hash_hostname => false,
-          :target        => target,
-        })
+        resources << new(ensure: :present,
+                         name: name,
+                         type: aug.get("#{spath}/type"),
+                         key: aug.get("#{spath}/key"),
+                         host_aliases: aliases,
+                         hash_hostname: false,
+                         target: target)
       end
       resources
     end
@@ -83,14 +81,13 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
       # Clear value
       return entry if hostnames.split(',')[0] == hostname
 
-      if is_hashed?(hostnames)
-        require 'base64'
-        dummy, one, salt64, hostname64 = hostnames.split[0].split('|')
-        salt = Base64.decode64(salt64)
-        return entry if hostname64 == Base64.encode64(OpenSSL::HMAC.digest('sha1', salt, hostname)).strip
-      end
+      next unless is_hashed?(hostnames)
+      require 'base64'
+      dummy, one, salt64, hostname64 = hostnames.split[0].split('|')
+      salt = Base64.decode64(salt64)
+      return entry if hostname64 == Base64.encode64(OpenSSL::HMAC.digest('sha1', salt, hostname)).strip
     end
-    return nil
+    nil
   end
 
   def self.is_hashed?(string)
@@ -129,7 +126,6 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
       end
     end
 
-
     set_value(aug, 'type', type)
     set_value(aug, 'key', key)
   end
@@ -137,7 +133,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
   def create
     augopen! do |aug|
       if resource[:hash_hostname] == :true
-        [ resource[:name], resource[:host_aliases] ].flatten.compact.each do |h|
+        [resource[:name], resource[:host_aliases]].flatten.compact.each do |h|
           create_entry(aug, h, resource[:type], resource[:key], true)
         end
       else
@@ -181,9 +177,9 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
     augopen do |aug|
       if is_resource_hashed?(aug)
         # We cannot know about unmanaged aliases when hashed
-        resource[:host_aliases].map do |a|
+        resource[:host_aliases].map { |a|
           a if self.class.find_resource(aug, a)
-        end.compact
+        }.compact
       else
         aug.match('$resource/alias').map do |a|
           aug.get(a)
@@ -213,9 +209,9 @@ Puppet::Type.type(:sshkey).provide(:augeas, :parent => Puppet::Type.type(:augeas
   def get_value(aug, label)
     if is_resource_hashed?(aug)
       # Use AND to make convergence fail if aliases are not in sync
-      [ resource[:name], resource[:host_aliases] ].flatten.compact.map do |h|
+      [resource[:name], resource[:host_aliases]].flatten.compact.map { |h|
         aug.get("#{self.class.find_resource(aug, h)}/#{label}")
-      end.uniq.join(' AND ')
+      }.uniq.join(' AND ')
     else
       aug.get("$resource/#{label}")
     end
