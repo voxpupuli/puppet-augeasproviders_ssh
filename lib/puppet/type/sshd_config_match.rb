@@ -1,3 +1,8 @@
+# Manages settings in OpenSSH's sshd_config file
+#
+# Copyright (c) 2015-2020 Raphaël Pinson
+# Licensed under the Apache License, Version 2.0
+
 Puppet::Type.newtype(:sshd_config_match) do
   @doc = 'Manages Match groups in an OpenSSH sshd_config file.'
 

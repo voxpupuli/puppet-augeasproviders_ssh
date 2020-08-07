@@ -1,6 +1,6 @@
 # Manages settings in OpenSSH's sshd_config file
 #
-# Copyright (c) 2012 Raphaël Pinson
+# Copyright (c) 2012-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
 Puppet::Type.newtype(:sshd_config) do

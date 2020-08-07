@@ -2,7 +2,7 @@
 
 # Alternative Augeas-based providers for Puppet
 #
-# Copyright (c) 2015 Raphaël Pinson
+# Copyright (c) 2015-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
 raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
