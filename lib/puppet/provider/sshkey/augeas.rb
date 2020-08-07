@@ -94,13 +94,13 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
     string.start_with?('|') if string
   end
 
-  def is_resource_hashed?(aug)
+  def resource_hashed?(aug)
     self.class.hashed?(aug.get('$resource'))
   end
 
   def hashed?
     augopen do |aug|
-      is_resource_hashed?(aug)
+      resource_hashed?(aug)
     end
   end
 
@@ -145,7 +145,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
   def destroy
     augopen! do |aug|
       aug.rm('$resource')
-      if is_resource_hashed?(aug)
+      if resource_hashed?(aug)
         resource[:host_aliases].each do |a|
           aug.rm(self.class.find_resource(aug, a))
         end
@@ -173,7 +173,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
 
   def host_aliases
     augopen do |aug|
-      if is_resource_hashed?(aug)
+      if resource_hashed?(aug)
         # We cannot know about unmanaged aliases when hashed
         resource[:host_aliases].map { |a|
           a if self.class.find_resource(aug, a)
@@ -188,7 +188,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
 
   def host_aliases=(values)
     augopen! do |aug|
-      if is_resource_hashed?(aug)
+      if resource_hashed?(aug)
         values.each do |v|
           unless self.class.find_resource(aug, v)
             create_entry(aug, v, resource[:type], resource[:key], true)
@@ -205,7 +205,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
   end
 
   def get_value(aug, label)
-    if is_resource_hashed?(aug)
+    if resource_hashed?(aug)
       # Use AND to make convergence fail if aliases are not in sync
       [resource[:name], resource[:host_aliases]].flatten.compact.map { |h|
         aug.get("#{self.class.find_resource(aug, h)}/#{label}")
@@ -219,7 +219,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
     raise(Puppet::Error, "#{label} is mandatory") unless value
     aug.set("$resource/#{label}", value.to_s)
 
-    if is_resource_hashed?(aug) && resource[:host_aliases]
+    if resource_hashed?(aug) && resource[:host_aliases]
       resource[:host_aliases].each do |h|
         aug.set("#{self.class.find_resource(aug, h)}/#{label}", value.to_s)
       end
