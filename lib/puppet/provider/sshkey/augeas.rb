@@ -144,12 +144,12 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
 
   def destroy
     augopen! do |aug|
-      aug.rm('$resource')
       if resource_hashed?(aug)
         resource[:host_aliases].each do |a|
           aug.rm(self.class.find_resource(aug, a))
         end
       end
+      aug.rm('$resource')
     end
   end
 
