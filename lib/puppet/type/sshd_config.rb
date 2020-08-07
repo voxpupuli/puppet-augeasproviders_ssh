@@ -1,6 +1,6 @@
 # Manages settings in OpenSSH's sshd_config file
 #
-# Copyright (c) 2012 Raphaël Pinson
+# Copyright (c) 2012-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
 Puppet::Type.newtype(:sshd_config) do
@@ -15,7 +15,7 @@ Subsystem entries are not managed by this type. There is a specific `sshd_config
   ensurable
 
   newparam(:name) do
-    desc "The name of the setting, or a unique string if `condition` given."
+    desc 'The name of the setting, or a unique string if `condition` given.'
     isnamevar
   end
 
@@ -24,7 +24,7 @@ Subsystem entries are not managed by this type. There is a specific `sshd_config
 given."
   end
 
-  newproperty(:value, :array_matching => :all) do
+  newproperty(:value, array_matching: :all) do
     desc "Value to change the setting to. The follow parameters take an array of values:
 
 - AcceptEnv;
@@ -62,10 +62,10 @@ All other parameters take a string. When passing an array to other parameters, o
         is = @resource.property(:value).retrieve
         is_arr = Array(is)
 
-        provider.value = is_arr | Array(self.should)
+        provider.value = is_arr | Array(should)
       else
         # Use the should array
-        provider.value = self.should
+        provider.value = should
       end
     end
 
@@ -83,7 +83,7 @@ All other parameters take a string. When passing an array to other parameters, o
   end
 
   newparam(:array_append) do
-    desc "Whether to add to existing array values or replace all values."
+    desc 'Whether to add to existing array values or replace all values.'
 
     newvalues :false, :true
 
@@ -91,9 +91,9 @@ All other parameters take a string. When passing an array to other parameters, o
 
     munge do |v|
       case v
-      when true, "true", :true
+      when true, 'true', :true
         true
-      when false, "false", :false
+      when false, 'false', :false
         false
       end
     end
@@ -131,7 +131,9 @@ whitespace.  This is used if the `Match` block has multiple criteria.
   end
 
   newproperty(:comment) do
-    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
+    desc 'Text to be stored in a comment immediately above the entry.
+    It will be automatically prepended with the name of the variable in order
+    for the provider to know whether it controls the comment or not.'
   end
 
   autorequire(:file) do

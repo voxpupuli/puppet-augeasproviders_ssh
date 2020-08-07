@@ -1,6 +1,6 @@
 # Manages settings in OpenSSH's ssh_config file
 #
-# Copyright (c) 2012 Raphaël Pinson
+# Copyright (c) 2012-2020 Raphaël Pinson
 # Licensed under the Apache License, Version 2.0
 
 Puppet::Type.newtype(:ssh_config) do
@@ -14,7 +14,7 @@ of the setting.
   ensurable
 
   newparam(:name) do
-    desc "The name of the setting, or a unique string if `host` given."
+    desc 'The name of the setting, or a unique string if `host` given.'
     isnamevar
   end
 
@@ -23,7 +23,7 @@ of the setting.
 given."
   end
 
-  newproperty(:value, :array_matching => :all) do
+  newproperty(:value, array_matching: :all) do
     desc "Value to change the setting to. The follow parameters take an array of values:
 
 - MACs;
@@ -45,13 +45,15 @@ All other parameters take a string. When passing an array to other parameters, o
   end
 
   newparam(:host) do
-    desc "Host condition for the entry."
+    desc 'Host condition for the entry.'
 
     defaultto { '*' }
   end
 
   newproperty(:comment) do
-    desc "Text to be stored in a comment immediately above the entry.  It will be automatically prepended with the name of the variable in order for the provider to know whether it controls the comment or not."
+    desc 'Text to be stored in a comment immediately above the entry.
+    It will be automatically prepended with the name of the variable in order
+    for the provider to know whether it controls the comment or not.'
   end
 
   autorequire(:file) do
