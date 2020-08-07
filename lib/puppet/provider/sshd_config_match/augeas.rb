@@ -121,7 +121,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type
       # At least one entry is mandatory (in the lens at least)
       self.comment = resource[:comment]
     end
-    end
+  end
 
   def comment
     augopen do |aug|
