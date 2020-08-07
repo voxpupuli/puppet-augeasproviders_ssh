@@ -27,7 +27,7 @@ describe provider_class do
       end
     end
 
-    it 'creates an array entry' do
+    it 'creates an array entry for GlobalKnownHostsFile' do
       apply!(Puppet::Type.type(:ssh_config).new(
                name: 'GlobalKnownHostsFile',
                value: ['/etc/ssh/ssh_known_hosts', '/etc/ssh/ssh_known_hosts2'],
@@ -41,7 +41,7 @@ describe provider_class do
       end
     end
 
-    it 'creates an array entry' do
+    it 'creates an array entry for SendEnv' do
       apply!(Puppet::Type.type(:ssh_config).new(
                name: 'SendEnv',
                value: ['LANG', 'LC_TYPE'],
