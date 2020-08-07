@@ -19,13 +19,13 @@ class Puppet::Type::Sshkey::Ensure
     current = retrieve
     if current == :absent
       provider.create
-    elsif !provider.is_hashed?
+    elsif !provider.hashed?
       provider.force_hash
     end
   end
 
   def insync?(is)
-    return true if should == :hashed && is == :present && provider.is_hashed?
+    return true if should == :hashed && is == :present && provider.hashed?
     super
   end
 end
@@ -81,7 +81,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
       # Clear value
       return entry if hostnames.split(',')[0] == hostname
 
-      next unless is_hashed?(hostnames)
+      next unless hashed?(hostnames)
       require 'base64'
       dummy, one, salt64, hostname64 = hostnames.split[0].split('|')
       salt = Base64.decode64(salt64)
@@ -90,15 +90,15 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
     nil
   end
 
-  def self.is_hashed?(string)
+  def self.hashed?(string)
     string.start_with?('|') if string
   end
 
   def is_resource_hashed?(aug)
-    self.class.is_hashed?(aug.get('$resource'))
+    self.class.hashed?(aug.get('$resource'))
   end
 
-  def is_hashed?
+  def hashed?
     augopen do |aug|
       is_resource_hashed?(aug)
     end
