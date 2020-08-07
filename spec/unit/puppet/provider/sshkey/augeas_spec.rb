@@ -20,10 +20,10 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 1
+        aug.match('./*[label()!="#comment"]').size.should eq(1)
         aug.get('./1').should =~ %r{^\|1\|}
-        aug.get('./1/type').should == 'ssh-rsa'
-        aug.get('./1/key').should == 'DEADMEAT'
+        aug.get('./1/type').should eq('ssh-rsa')
+        aug.get('./1/key').should eq('DEADMEAT')
       end
     end
 
@@ -39,12 +39,12 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 3
+        aug.match('./*[label()!="#comment"]').size.should eq(3)
         aug.get('./1').should =~ %r{^\|1\|}
-        aug.get('./1/type').should == 'ssh-rsa'
-        aug.get('./1/key').should == 'DEADMEAT'
-        aug.get('./2/key').should == 'DEADMEAT'
-        aug.get('./3/key').should == 'DEADMEAT'
+        aug.get('./1/type').should eq('ssh-rsa')
+        aug.get('./1/key').should eq('DEADMEAT')
+        aug.get('./2/key').should eq('DEADMEAT')
+        aug.get('./3/key').should eq('DEADMEAT')
       end
     end
 
@@ -59,10 +59,10 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 1
-        aug.get('./1').should == 'bar.example.com'
-        aug.get('./1/type').should == 'ssh-rsa'
-        aug.get('./1/key').should == 'DEADMEAT'
+        aug.match('./*[label()!="#comment"]').size.should eq(1)
+        aug.get('./1').should eq('bar.example.com')
+        aug.get('./1/type').should eq('ssh-rsa')
+        aug.get('./1/key').should eq('DEADMEAT')
       end
     end
 
@@ -78,11 +78,11 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 1
-        aug.get('./1').should == 'bar.example.com'
-        aug.get('./1/type').should == 'ssh-rsa'
-        aug.get('./1/alias[1]').should == 'foo'
-        aug.get('./1/alias[2]').should == 'bar'
+        aug.match('./*[label()!="#comment"]').size.should eq(1)
+        aug.get('./1').should eq('bar.example.com')
+        aug.get('./1/type').should eq('ssh-rsa')
+        aug.get('./1/alias[1]').should eq('foo')
+        aug.get('./1/alias[2]').should eq('bar')
       end
     end
   end
@@ -116,7 +116,7 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.get('./2/key').should == 'DEADMEAT'
+        aug.get('./2/key').should eq('DEADMEAT')
       end
     end
 
@@ -129,9 +129,9 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./2/alias').size.should == 2
-        aug.get('./2/alias[1]').should == 'foo'
-        aug.get('./2/alias[2]').should == 'bar'
+        aug.match('./2/alias').size.should eq(2)
+        aug.get('./2/alias[1]').should eq('foo')
+        aug.get('./2/alias[2]').should eq('bar')
       end
     end
 
@@ -145,7 +145,7 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.get('./1/key').should == 'DEADMEAT'
+        aug.get('./1/key').should eq('DEADMEAT')
       end
     end
 
@@ -161,10 +161,10 @@ describe provider_class do
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         # Should not add an alias node
-        aug.match('./1/alias').size.should == 0
+        aug.match('./1/alias').size.should eq(0)
         # Should add a new entry
-        aug.match('./*[label()!="#comment"]').size.should == 4
-        aug.get('./4/key').should == 'DEADMEAT'
+        aug.match('./*[label()!="#comment"]').size.should eq(4)
+        aug.get('./4/key').should eq('DEADMEAT')
       end
     end
 
@@ -179,9 +179,9 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 3
-        aug.get('./1/key').should == 'ABCDE'
-        aug.get('./3/key').should == 'ABCDE'
+        aug.match('./*[label()!="#comment"]').size.should eq(3)
+        aug.get('./1/key').should eq('ABCDE')
+        aug.get('./3/key').should eq('ABCDE')
       end
     end
 
@@ -194,13 +194,13 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 4
+        aug.match('./*[label()!="#comment"]').size.should eq(4)
         aug.get('./2').should =~ %r{^\|1\|}
-        aug.get('./2/type').should == 'ssh-rsa'
+        aug.get('./2/type').should eq('ssh-rsa')
         aug.get('./2/key').should =~ %r{^AAAAB3NzaC1yc2}
-        aug.match('./2/alias').size.should == 0
+        aug.match('./2/alias').size.should eq(0)
         aug.get('./4').should =~ %r{^\|1\|}
-        aug.get('./4/type').should == 'ssh-rsa'
+        aug.get('./4/type').should eq('ssh-rsa')
         aug.get('./4/key').should =~ %r{^AAAAB3NzaC1yc2}
       end
     end
@@ -214,7 +214,7 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 2
+        aug.match('./*[label()!="#comment"]').size.should eq(2)
       end
     end
 
@@ -228,7 +228,7 @@ describe provider_class do
       ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
-        aug.match('./*[label()!="#comment"]').size.should == 1
+        aug.match('./*[label()!="#comment"]').size.should eq(1)
       end
     end
   end
