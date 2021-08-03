@@ -35,7 +35,8 @@ given."
 - DenyUsers;
 - Port;
 - KexAlgorithms;
-- MACs.
+- MACs;
+- HostKeyAlgorithms.
 
 All other parameters take a string. When passing an array to other parameters, only the first value in the array will be considered."
 
