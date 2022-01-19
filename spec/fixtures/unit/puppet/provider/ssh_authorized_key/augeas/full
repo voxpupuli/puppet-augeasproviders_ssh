@@ -1,0 +1,6 @@
+# Comments allowed at start of line
+ssh-rsa AAAAB3NzaLiPk== user@example.net
+from="*.sales.example.net,!pc.sales.example.net" ssh-rsa AAAAB219Q== john@example.net
+command="dump /home",no-pty,no-port-forwarding ssh-dss AAAAC351R== example.net
+permitopen="192.0.2.1:80",permitopen="192.0.2.2:25" ssh-dss AAAAB521S==
+tunnel="0",command="sh /etc/netstart tun0" ssh-rsa AAAA...== jane@example.net

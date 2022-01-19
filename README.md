@@ -55,6 +55,7 @@ Augeas Versions           | 0.10.0  | 1.0.0   | 1.1.0   | 1.2.0   |
 case-insensitive keys     | no      | **yes** | **yes** | **yes** |
 **PROVIDERS**             |
 ssh\_config               | **yes** | **yes** | **yes** | **yes** |
+ssh\_authorized\_key      | no      | **yes** | **yes** | **yes** |
 sshd\_config              | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_match       | **yes** | **yes** | **yes** | **yes** |
 sshd\_config\_subsystem   | **yes** | **yes** | **yes** | **yes** |
@@ -131,6 +132,10 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       value  => "yes",
       target => "/etc/ssh/another_sshd_config",
     }
+
+### ssh_authorized_key
+
+See [https://docs.puppetlabs.com/references/latest/type.html#sshauthorizedkey](the Puppet types documentation) for sample usage.
 
 ### sshd_config provider
 
