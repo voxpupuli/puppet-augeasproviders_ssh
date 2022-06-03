@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "herculesteam/augeasproviders_core",
-      "version_requirement": ">=2.4.0 <3.0.0"
+      "version_requirement": ">=2.4.0 <4.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -37,7 +37,8 @@
       "operatingsystemrelease": [
         "6",
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -45,7 +46,28 @@
       "operatingsystemrelease": [
         "6",
         "7",
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
         "8"
+      ]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Fedora",
+      "operatingsystemrelease": [
+        "35",
+        "36"
       ]
     },
     {
@@ -60,7 +82,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
+      "version_requirement": ">= 5.0.0 < 9.0.0"
     }
   ],
   "description": "This module provides types/providers for ssh configuration files using the Augeas configuration API library.",
