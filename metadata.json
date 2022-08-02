@@ -1,15 +1,15 @@
 {
-  "name": "herculesteam-augeasproviders_ssh",
-  "version": "4.0.0",
-  "author": "Raphael Pinson",
+  "name": "puppet-augeasproviders_ssh",
+  "version": "4.0.1",
+  "author": "Vox Pupuli",
   "summary": "Augeas-based ssh types and providers for Puppet",
   "license": "Apache-2.0",
-  "source": "https://github.com/hercules-team/augeasproviders_ssh",
-  "project_page": "https://github.com/hercules-team/augeasproviders_ssh",
-  "issues_url": "https://github.com/hercules-team/augeasproviders_ssh/issues",
+  "source": "https://github.com/voxpupuli/augeasproviders_ssh",
+  "project_page": "https://github.com/voxpupuli/augeasproviders_ssh",
+  "issues_url": "https://github.com/voxpupuli/augeasproviders_ssh/issues",
   "dependencies": [
     {
-      "name": "herculesteam/augeasproviders_core",
+      "name": "puppet/augeasproviders_core",
       "version_requirement": ">=2.4.0 <4.0.0"
     }
   ],

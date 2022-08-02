@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.1
+
+Change Forge org to `puppet` (project moved from herculestem to Vox Pupuli)
+
 ## 4.0.0
 
 - Deprecate support for Augeas < 1.0.0
