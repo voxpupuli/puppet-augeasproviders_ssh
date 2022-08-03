@@ -15,3 +15,9 @@ if File.exist?(File.join(__dir__, 'default_module_facts.yml'))
     add_custom_fact name.to_sym, value
   end
 end
+
+require 'augeas_spec'
+
+# augeasproviders: setting $LOAD_PATH to work around broken type autoloading
+
+$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_core/lib'))
