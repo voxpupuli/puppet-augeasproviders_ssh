@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Manages settings in OpenSSH's sshd_config file
 #
 # Copyright (c) 2012-2020 Raphaël Pinson
@@ -40,9 +42,7 @@ given."
 
 All other parameters take a string. When passing an array to other parameters, only the first value in the array will be considered."
 
-    munge do |v|
-      v.to_s
-    end
+    munge(&:to_s)
 
     def insync?(is)
       should_arr = Array(should)

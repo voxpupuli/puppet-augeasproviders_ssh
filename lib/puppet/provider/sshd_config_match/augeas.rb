@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 # Alternative Augeas-based providers for Puppet
 #
@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0
 
 raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
+
 Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc 'Uses Augeas API to update an sshd_config Match group'
 
@@ -76,6 +77,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type
   def self.in_position?(aug, resource)
     position = resource[:position]
     return unless position
+
     path = if position[:before]
              "$resource[following-sibling::#{position_path(position)}]"
            else
@@ -126,7 +128,7 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type
   def comment
     augopen do |aug|
       comment = aug.get('$resource/Settings/#comment[1]')
-      comment.sub!(%r{^#{resource[:name]}:\s*}i, '') if comment
+      comment&.sub!(%r{^#{resource[:name]}:\s*}i, '')
       comment || ''
     end
   end
@@ -135,11 +137,9 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type
     augopen! do |aug|
       cmtnode = '$resource/Settings/#comment[1]'
 
-      if aug.match(cmtnode).empty?
-        if aug.match('$resource/Settings/*').any?
-          # Insert before first entry
-          aug.insert('$resource/Settings/*[1]', '#comment', true)
-        end
+      if aug.match(cmtnode).empty? && aug.match('$resource/Settings/*').any?
+        # Insert before first entry
+        aug.insert('$resource/Settings/*[1]', '#comment', true)
       end
 
       aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")

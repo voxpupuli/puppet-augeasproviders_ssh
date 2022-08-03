@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 ssh_config_type = Puppet::Type.type(:ssh_config)
@@ -15,8 +17,8 @@ describe ssh_config_type do
     end
 
     it 'accepts a value array parameter' do
-      resource = ssh_config_type.new name: 'MACs', value: ['foo', 'bar']
-      expect(resource[:value]).to eq(['foo', 'bar'])
+      resource = ssh_config_type.new name: 'MACs', value: %w[foo bar]
+      expect(resource[:value]).to eq(%w[foo bar])
     end
 
     it 'accepts a target parameter' do
@@ -25,9 +27,9 @@ describe ssh_config_type do
     end
 
     it 'fails if target is not an absolute path' do
-      expect {
+      expect do
         ssh_config_type.new name: 'foo', target: 'foo'
-      }.to raise_error
+      end.to raise_error
     end
 
     it 'accepts a host parameter' do

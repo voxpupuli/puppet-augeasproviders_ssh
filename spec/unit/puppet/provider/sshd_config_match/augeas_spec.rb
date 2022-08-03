@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:sshd_config_match).provider(:augeas)
 
 describe provider_class do
-  before :each do
+  before do
     FileTest.stubs(:exist?).returns false
     FileTest.stubs(:exist?).with('/etc/ssh/sshd_config').returns true
   end
@@ -17,8 +19,8 @@ describe provider_class do
                name: 'Host foo',
                target: target,
                ensure: :present,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('Match/Condition/Host')).to eq('foo')
@@ -31,8 +33,8 @@ describe provider_class do
                target: target,
                ensure: :present,
                comment: 'manage host foo',
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('Match[Condition/Host]/Settings/#comment')).to eq('Host foo: manage host foo')
@@ -64,8 +66,8 @@ describe provider_class do
                  name: 'Foo bar',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('Match/Condition/Foo')[0]).to end_with('/Match[3]/Condition/Foo')
@@ -79,8 +81,8 @@ describe provider_class do
                  position: 'before first match',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('Match/Condition/Bar')[0]).to end_with('/Match[1]/Condition/Bar')
@@ -94,8 +96,8 @@ describe provider_class do
                  position: 'before User * Host *.example.net',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('Match/Condition/Fooz')[0]).to end_with('/Match[2]/Condition/Fooz')
@@ -108,8 +110,8 @@ describe provider_class do
                  name: 'User bar',
                  target: target,
                  comment: 'bar is a user',
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Match[Condition/User]/Settings/#comment')).to eq('User bar: bar is a user')
@@ -123,8 +125,8 @@ describe provider_class do
                  name: 'User anoncvs',
                  target: target,
                  ensure: :absent,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match("Match/Condition/User[.='anoncvs']").size).to eq(0)
@@ -136,8 +138,8 @@ describe provider_class do
                  name: 'User anoncvs',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.match('Match[Condition/User]/Settings/#comment').size).to eq(0)
@@ -152,8 +154,8 @@ describe provider_class do
                  position: 'after last match',
                  target: target,
                  ensure: :positioned,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match("Match/Condition/User[.='anoncvs']")[0]).to end_with('/Match[2]/Condition/User')
@@ -167,8 +169,8 @@ describe provider_class do
                  name: 'User anoncvs',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment',
-        ))
+                 comment: 'This is a different comment'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Match[Condition/User]/Settings/#comment')).to eq('User anoncvs: This is a different comment')
@@ -185,10 +187,9 @@ describe provider_class do
       txn = apply(Puppet::Type.type(:sshd_config_match).new(
                     name: 'Host foo',
                     target: target,
-                    provider: 'augeas',
-      ))
+                    provider: 'augeas'
+                  ))
 
-      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)

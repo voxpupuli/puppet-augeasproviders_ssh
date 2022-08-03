@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:sshd_config).provider(:augeas)
 
 describe provider_class do
-  before :each do
+  before do
     FileTest.stubs(:exist?).returns false
     FileTest.stubs(:exist?).with('/etc/ssh/sshd_config').returns true
   end
@@ -17,8 +19,8 @@ describe provider_class do
                name: 'PermitRootLogin',
                value: 'yes',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('PermitRootLogin')).to eq('yes')
@@ -28,10 +30,10 @@ describe provider_class do
     it 'creates an array entry' do
       apply!(Puppet::Type.type(:sshd_config).new(
                name: 'AllowGroups',
-               value: ['sshgroups', 'admins'],
+               value: %w[sshgroups admins],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('AllowGroups/1')).to eq('sshgroups')
@@ -45,8 +47,8 @@ describe provider_class do
                value: 'example_user',
                target: target,
                provider: 'augeas',
-               comment: 'Deny example_user access',
-      ))
+               comment: 'Deny example_user access'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('#comment[following-sibling::DenyUsers][last()]')).to eq('DenyUsers: Deny example_user access')
@@ -58,8 +60,8 @@ describe provider_class do
                name: 'GSSAPIKexAlgorithms',
                value: 'gss-group14-sha1-',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('GSSAPIKexAlgorithms')).to eq('gss-group14-sha1-')
@@ -72,8 +74,8 @@ describe provider_class do
                condition: 'Host foo User root',
                value: 'yes',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('Match[1]/Condition/Host')).to eq('foo')
@@ -84,53 +86,53 @@ describe provider_class do
 
     context 'when declaring two resources with same key' do
       it 'fails with same name' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'X11Forwarding',
               condition: 'Host foo User root',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
+        end.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
       end
 
       it 'fails with different names, same key and no conditions' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'Global X11Forwarding',
               key: 'X11Forwarding',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.to raise_error
+        end.to raise_error
       end
 
       it 'does not fail with different names, same key and different conditions' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:sshd_config).new(
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'Global X11Forwarding',
@@ -138,10 +140,10 @@ describe provider_class do
               condition: 'User foo',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
   end
@@ -164,16 +166,16 @@ describe provider_class do
       expect(inst.size).to eq(16)
       expect(inst[0]).to eq(name: 'ListenAddress', ensure: :present, value: ['0.0.0.0', '::'], condition: :absent)
       expect(inst[1]).to eq(name: 'SyslogFacility', ensure: :present, value: ['AUTHPRIV'], condition: :absent)
-      expect(inst[2]).to eq(name: 'AllowGroups', ensure: :present, value: ['sshusers', 'admins'], condition: :absent)
+      expect(inst[2]).to eq(name: 'AllowGroups', ensure: :present, value: %w[sshusers admins], condition: :absent)
       expect(inst[3]).to eq(name: 'PermitRootLogin', ensure: :present, value: ['without-password'], condition: :absent)
       expect(inst[4]).to eq(name: 'PasswordAuthentication', ensure: :present, value: ['yes'], condition: :absent)
       expect(inst[8]).to eq(name: 'UsePAM', ensure: :present, value: ['yes'], condition: :absent)
       expect(inst[9]).to eq(
         name: 'AcceptEnv', ensure: :present,
-        value: ['LANG', 'LC_CTYPE', 'LC_NUMERIC', 'LC_TIME', 'LC_COLLATE',
-                'LC_MONETARY', 'LC_MESSAGES', 'LC_PAPER', 'LC_NAME', 'LC_ADDRESS',
-                'LC_TELEPHONE', 'LC_MEASUREMENT', 'LC_IDENTIFICATION', 'LC_ALL',
-                'LANGUAGE', 'XMODIFIERS'],
+        value: %w[LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE
+                  LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
+                  LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL
+                  LANGUAGE XMODIFIERS],
         condition: :absent
       )
       expect(inst[11]).to eq(name: 'X11Forwarding', ensure: :present, value: ['no'], condition: 'User anoncvs')
@@ -186,8 +188,8 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Banner')).to eq('/etc/issue')
@@ -200,8 +202,8 @@ describe provider_class do
                  condition: 'Host *.example.net User *',
                  value: '2222',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('Match[2]/Settings/ListenAddress[preceding-sibling::Port]').size).to eq(1)
@@ -213,8 +215,8 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="no default banner path"]][label()!="Match"]', '
           { "#comment" = "Banner none" }
@@ -231,8 +233,8 @@ describe provider_class do
                  name: 'usedns',
                  value: 'no',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="ShowPatchLevel no"]][label()!="Match"]', '
           { "#comment" = "UseDNS yes" }
@@ -254,10 +256,10 @@ describe provider_class do
       it 'creates an array entry' do
         apply!(Puppet::Type.type(:sshd_config).new(
                  name: 'AllowUsers',
-                 value: ['ssh', 'foo'],
+                 value: %w[ssh foo],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('AllowUsers/1')).to eq('ssh')
@@ -270,8 +272,8 @@ describe provider_class do
                  name: 'syslogFacility',
                  target: target,
                  provider: 'augeas',
-                 comment: 'more secure',
-        ))
+                 comment: 'more secure'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('#comment[following-sibling::SyslogFacility][last()]')).to eq('syslogFacility: more secure')
@@ -284,8 +286,8 @@ describe provider_class do
                  condition: 'Host *.example.net',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Match[3]/Settings/AllowAgentForwarding')).to eq('yes')
@@ -304,8 +306,8 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).to eq([])
@@ -322,8 +324,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).to eq([])
@@ -341,8 +343,8 @@ describe provider_class do
                  condition: 'Host *.example.net User *',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).to eq([])
@@ -354,8 +356,8 @@ describe provider_class do
                  name: 'AllowGroups',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('VisualHostKey[preceding-sibling::#comment]').size).to eq(0)
@@ -369,8 +371,8 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match("*[label()='PermitRootLogin']").size).to eq(1)
@@ -384,8 +386,8 @@ describe provider_class do
                  condition: 'User anoncvs',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Match[*]/Settings/X11Forwarding')).to eq('yes')
@@ -395,10 +397,10 @@ describe provider_class do
       it 'replaces the array setting' do
         apply!(Puppet::Type.type(:sshd_config).new(
                  name: 'AcceptEnv',
-                 value: ['BAR', 'LC_FOO'],
+                 value: %w[BAR LC_FOO],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('AcceptEnv/*').size).to eq(2)
@@ -412,8 +414,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1', '192.168.3.1'],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress').size).to eq(3)
@@ -428,8 +430,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: '192.168.1.1',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress').size).to eq(1)
@@ -443,8 +445,8 @@ describe provider_class do
                  value: 'AUTHPRIV',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment',
-        ))
+                 comment: 'This is a different comment'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('#comment[following-sibling::SyslogFacility][last()]')).to eq('SyslogFacility: This is a different comment')
@@ -456,8 +458,8 @@ describe provider_class do
                  name: 'PaSswordaUtheNticAtion',
                  value: 'no',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match("*[label()=~regexp('PasswordAuthentication', 'i')]").size).to eq(1)
@@ -469,11 +471,11 @@ describe provider_class do
         it 'does not remove existing values' do
           apply!(Puppet::Type.type(:sshd_config).new(
                    name: 'AcceptEnv',
-                   value: ['BAR', 'LC_TIME'],
+                   value: %w[BAR LC_TIME],
                    array_append: true,
                    target: target,
-                   provider: 'augeas',
-          ))
+                   provider: 'augeas'
+                 ))
 
           aug_open(target, 'Sshd.lns') do |aug|
             expect(aug.match('AcceptEnv/*').size).to eq(17)
@@ -494,8 +496,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1'],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress').size).to eq(2)
@@ -507,10 +509,10 @@ describe provider_class do
       it 'replaces the array setting' do
         apply!(Puppet::Type.type(:sshd_config).new(
                  name: 'AcceptEnv',
-                 value: ['BAR', 'LC_FOO'],
+                 value: %w[BAR LC_FOO],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('AcceptEnv/*').size).to eq(2)
@@ -524,8 +526,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1', '192.168.3.1'],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress').size).to eq(3)
@@ -540,8 +542,8 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: '192.168.1.1',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress').size).to eq(1)
@@ -554,8 +556,8 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="no default banner path"]]', '
           { "#comment" = "Banner none" }
@@ -571,8 +573,8 @@ describe provider_class do
                  name: 'Port',
                  value: '2222',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match('ListenAddress[preceding-sibling::Port]').size).to eq(2)
@@ -586,8 +588,8 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match("*[label()='PermitRootLogin']").size).to eq(1)
@@ -606,17 +608,16 @@ describe provider_class do
                     name: 'PermitRootLogin',
                     value: 'yes',
                     target: target,
-                    provider: 'augeas',
-      ))
+                    provider: 'augeas'
+                  ))
 
-      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)
     end
   end
 
-  ['AddressFamily', 'ListenAddress'].each do |key|
+  %w[AddressFamily ListenAddress].each do |key|
     context 'when adding AddressFamily' do
       values = {
         'AddressFamily' => 'any',
@@ -649,18 +650,16 @@ describe provider_class do
                  name: key,
                  value: value,
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         file_hash = create_file_hash(provider_class)
 
-        file_hash.keys.each do |section|
+        file_hash.each_key do |section|
           # Make sure our test input is correctly broken
           af_index = file_hash[section].index('AddressFamily')
           la_index = file_hash[section].index('ListenAddress')
-          if af_index && la_index
-            expect(af_index).to be < la_index
-          end
+          expect(af_index).to be < la_index if af_index && la_index
         end
       end
     end

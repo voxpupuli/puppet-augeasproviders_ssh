@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 dir = Pathname.new(__FILE__).parent
 $LOAD_PATH.unshift(dir, File.join(dir, 'lib'), File.join(dir, '..', 'lib'))
@@ -38,12 +40,12 @@ if ver >= Gem::Version.new('2.7.20')
   $LOAD_PATH.unshift(
     dir,
     File.join(dir, 'fixtures/modules/augeasproviders_core/spec/lib'),
-    File.join(dir, 'fixtures/modules/augeasproviders_core/lib'),
+    File.join(dir, 'fixtures/modules/augeasproviders_core/lib')
   )
 
   if ver >= Gem::Version.new('6.0.0')
     $LOAD_PATH.unshift(
-      File.join(dir, 'fixtures/modules/sshkeys_core/lib'),
+      File.join(dir, 'fixtures/modules/sshkeys_core/lib')
     )
   end
 

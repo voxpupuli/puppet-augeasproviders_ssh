@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:ssh_config).provider(:augeas)
 
 describe provider_class do
-  before :each do
+  before do
     FileTest.stubs(:exist?).returns false
     FileTest.stubs(:exist?).with('/etc/ssh/ssh_config').returns true
   end
@@ -17,8 +19,8 @@ describe provider_class do
                name: 'ForwardAgent',
                value: 'yes',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Ssh.lns') do |aug|
         expect(aug.get('Host/ForwardAgent')).to eq('yes')
@@ -30,8 +32,8 @@ describe provider_class do
                name: 'GlobalKnownHostsFile',
                value: ['/etc/ssh/ssh_known_hosts', '/etc/ssh/ssh_known_hosts2'],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Ssh.lns') do |aug|
         expect(aug.get('Host/GlobalKnownHostsFile/1')).to eq('/etc/ssh/ssh_known_hosts')
@@ -42,10 +44,10 @@ describe provider_class do
     it 'creates an array entry for SendEnv' do
       apply!(Puppet::Type.type(:ssh_config).new(
                name: 'SendEnv',
-               value: ['LANG', 'LC_TYPE'],
+               value: %w[LANG LC_TYPE],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Ssh.lns') do |aug|
         expect(aug.get('Host/SendEnv/1')).to eq('LANG')
@@ -59,8 +61,8 @@ describe provider_class do
                host: 'example.net',
                value: 'yes',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Ssh.lns') do |aug|
         expect(aug.get("Host[.='example.net']/ForwardAgent")).to eq('yes')
@@ -74,8 +76,8 @@ describe provider_class do
                value: 'example_user',
                target: target,
                provider: 'augeas',
-               comment: 'Deny example_user access',
-      ))
+               comment: 'Deny example_user access'
+             ))
 
       aug_open(target, 'Ssh.lns') do |aug|
         expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers][last()]")).to eq('DenyUsers: Deny example_user access')
@@ -84,53 +86,53 @@ describe provider_class do
 
     context 'when declaring two resources with same key' do
       it 'fails with same name' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:ssh_config).new(
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'ForwardAgent',
               host: 'example.net',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
+        end.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
       end
 
       it 'fails with different names, same key and no host' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:ssh_config).new(
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'Example ForwardAgent',
               key: 'ForwardAgent',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.to raise_error
+        end.to raise_error
       end
 
       it 'does not fail with different names, same key and different hosts' do
-        expect {
+        expect do
           apply!(
             Puppet::Type.type(:ssh_config).new(
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas',
+              provider: 'augeas'
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'Example ForwardAgent',
@@ -138,10 +140,10 @@ describe provider_class do
               host: 'example.net',
               value: 'yes',
               target: target,
-              provider: 'augeas',
-            ),
+              provider: 'augeas'
+            )
           )
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
   end
@@ -177,8 +179,8 @@ describe provider_class do
                  host: 'example.net',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.get("Host[.='example.net']/ForwardAgent")).to eq('yes')
@@ -191,8 +193,8 @@ describe provider_class do
                  host: 'example.net',
                  value: ['LC_*', 'LANG'],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.get("Host[.='example.net']/SendEnv/1")).to eq('LC_*')
@@ -207,8 +209,8 @@ describe provider_class do
                  value: 'example_user',
                  target: target,
                  provider: 'augeas',
-                 comment: 'Deny example_user access',
-        ))
+                 comment: 'Deny example_user access'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.get("Host[.='example.net']/#comment[following-sibling::DenyUsers][last()]")).to eq('DenyUsers: Deny example_user access')
@@ -223,8 +225,8 @@ describe provider_class do
                  ensure: 'absent',
                  host: '*',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.match("Host[.='*']/HashKnownHosts").size).to eq(0)
@@ -237,8 +239,8 @@ describe provider_class do
                  ensure: 'absent',
                  host: '*',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.match("Host[.='*']/VisualHostKey[preceding-sibling::#comment]").size).to eq(0)
@@ -253,8 +255,8 @@ describe provider_class do
                  host: '*',
                  value: 'no',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.get("Host[.='*']/HashKnownHosts")).to eq('no')
@@ -267,8 +269,8 @@ describe provider_class do
                  host: '*',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment',
-        ))
+                 comment: 'This is a different comment'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.get("Host[.='*']/#comment[following-sibling::HashKnownHosts][last()]")).to eq('HashKnownHosts: This is a different comment')
@@ -279,10 +281,10 @@ describe provider_class do
         apply!(Puppet::Type.type(:ssh_config).new(
                  name: 'SendEnv',
                  host: '*',
-                 value: ['foo', 'bar'],
+                 value: %w[foo bar],
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.match("Host[.='*']/SendEnv/*").size).to eq(2)
@@ -296,8 +298,8 @@ describe provider_class do
                  name: 'GssaPiaUthentication',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Ssh.lns') do |aug|
           expect(aug.match("Host[.='*']/*[label()=~regexp('GSSAPIAuthentication', 'i')]").size).to eq(1)
@@ -316,10 +318,9 @@ describe provider_class do
                     name: 'ForwardAgent',
                     value: 'yes',
                     target: target,
-                    provider: 'augeas',
-      ))
+                    provider: 'augeas'
+                  ))
 
-      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)

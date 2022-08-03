@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Manages Subsystem settings in OpenSSH's sshd_config file
 #
 # Copyright (c) 2012-2020 Raphaël Pinson
