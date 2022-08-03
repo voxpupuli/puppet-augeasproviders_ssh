@@ -4,7 +4,6 @@ fixtures:
       repo: "puppetlabs/sshkeys_core"
       puppet_version: '>= 6.0.0'
   repositories:
-    augeasproviders_core:
-      repo: "git://github.com/hercules-team/augeasproviders_core.git"
+    augeasproviders_core: "https://github.com/voxpupuli/augeasproviders_core.git"
   symlinks:
     augeasproviders_ssh: "#{source_dir}"
