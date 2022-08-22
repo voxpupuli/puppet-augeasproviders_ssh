@@ -10,7 +10,7 @@ Change Forge org to `puppet` (project moved from herculestem to Vox Pupuli)
 - Update supported Ubuntu versions
 - sshd_config: close array regexp (GH #54), fix GH #52
 - sshd_config_match: remove duplicated condition param in test (GH #58)
-- sshkey: do not test type update, it's a parameter in Puppet 6 (GH #59) 
+- sshkey: do not test type update, it's a parameter in Puppet 6 (GH #59)
 - Add support for comments in types and providers (GH #61)
 - Update copyright and authors infos
 
