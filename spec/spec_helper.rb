@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+
 # puppetlabs_spec_helper will set up coverage if the env variable is set.
 # We want to do this if lib exists and it hasn't been explicitly set.
 ENV['COVERAGE'] ||= 'yes' if Dir.exist?(File.expand_path('../lib', __dir__))
@@ -18,4 +21,5 @@ require 'augeas_spec'
 # augeasproviders: setting $LOAD_PATH to work around broken type autoloading
 
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_core/lib'))
+
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/sshkeys_core/lib'))

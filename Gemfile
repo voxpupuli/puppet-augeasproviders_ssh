@@ -18,6 +18,7 @@ end
 
 group :system_tests do
   gem 'voxpupuli-acceptance', '~> 1.0',  :require => false
+  gem 'puppetlabs_spec_helper',          :require => false
 end
 
 group :release do
