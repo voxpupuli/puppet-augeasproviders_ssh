@@ -8,7 +8,6 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it 'creates simple new hashed entry' do
-      skip('Monkey patching not working in tests')
       apply!(Puppet::Type.type(:sshkey).new(
                name: 'foo.example.com',
                type: 'ssh-rsa',
@@ -27,7 +26,6 @@ describe provider_class do
     end
 
     it 'creates simple new hashed entry with aliases' do
-      skip('Monkey patching not working in tests')
       apply!(Puppet::Type.type(:sshkey).new(
                name: 'foo.example.com',
                type: 'ssh-rsa',

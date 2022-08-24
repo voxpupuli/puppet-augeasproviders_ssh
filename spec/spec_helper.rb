@@ -23,3 +23,4 @@ require 'augeas_spec'
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_core/lib'))
 
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/sshkeys_core/lib'))
+$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_ssh/lib'))
