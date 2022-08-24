@@ -17,3 +17,5 @@ jobs:
     with:
       pidfile_workaround: 'false'
       additional_packages: 'libaugeas-dev augeas-tools'
+      # Enable this later but this would be too much
+      rubocop: 'false'
