@@ -6,7 +6,7 @@ HOSTS:
     platform: el-7-x86_64
     hypervisor: docker
     image: centos:7
-    docker_cmd: '/sbin/init'
+    docker_cmd: '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y openssl'
       - 'yum install -y epel-release'
@@ -15,18 +15,7 @@ HOSTS:
   el8:
     platform: el-8-x86_64
     hypervisor: docker
-    image: centos:8
-    docker_cmd: '/sbin/init'
-    docker_image_commands:
-      - 'yum install -y openssl'
-      - 'yum install -y epel-release'
-    docker_preserve_image: true
-
-  el6:
-    platform: el-6-x86_64
-    hypervisor: docker
-    image: centos:6
-    docker_cmd: '/sbin/init'
+    image: centos:stream8
     docker_image_commands:
       - 'yum install -y openssl'
       - 'yum install -y epel-release'
