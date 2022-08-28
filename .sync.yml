@@ -5,8 +5,15 @@ Gemfile:
   optional:
     ':test':
       - gem: ruby-augeas
+    ':system_tests':
+      - gem: 'simp-beaker-helpers'
+        version: '~> 1.24'
+      - gem: 'puppetlabs_spec_helper'
 spec/spec_helper.rb:
   spec_overrides:
     - "require 'augeas_spec'"
     - "# augeasproviders: setting $LOAD_PATH to work around broken type autoloading"
     - "$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_core/lib'))"
+    - "$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/sshkeys_core/lib'))"
+    # Allow for proper monkey patching of the sshkeys provider
+    - "$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_ssh/lib'))"

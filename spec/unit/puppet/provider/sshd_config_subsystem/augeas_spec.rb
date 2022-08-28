@@ -7,8 +7,8 @@ provider_class = Puppet::Type.type(:sshd_config_subsystem).provider(:augeas)
 
 describe provider_class do
   before do
-    FileTest.stubs(:exist?).returns false
-    FileTest.stubs(:exist?).with('/etc/ssh/sshd_config').returns true
+    allow(FileTest).to receive(:exist?).and_return(false)
+    allow(FileTest).to receive(:exist?).with('/etc/ssh/ssh_config').and_return(true)
   end
 
   context 'with empty file' do
@@ -48,7 +48,8 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it 'lists instances' do
-      provider_class.stubs(:target).returns(target)
+      allow(provider_class).to receive(:target).and_return(target)
+
       inst = provider_class.instances.map do |p|
         {
           name: p.get(:name),
