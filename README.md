@@ -27,7 +27,7 @@ know anything about Augeas to make use of it.
 ## Requirements
 
 Ensure both Augeas and ruby-augeas 0.3.0+ bindings are installed and working as
-normal (both are usually bundled in the puppet agent AIO packages from Puppet Inc).
+normal. Both are usually bundled in the puppet agent AIO packages from Puppet Inc.
 
 See [Puppet/Augeas pre-requisites](http://docs.puppetlabs.com/guides/augeas.html#pre-requisites).
 
