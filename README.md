@@ -1,9 +1,15 @@
-[![Puppet Forge Version](http://img.shields.io/puppetforge/v/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
-[![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
-[![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/herculesteam/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/herculesteam/augeasproviders_ssh)
-[![Build Status](https://img.shields.io/travis/hercules-team/augeasproviders_ssh/master.svg)](https://travis-ci.org/hercules-team/augeasproviders_ssh)
-[![Coverage Status](https://img.shields.io/coveralls/hercules-team/augeasproviders_ssh.svg)](https://coveralls.io/r/hercules-team/augeasproviders_ssh)
-[![Sponsor](https://img.shields.io/badge/%E2%99%A5-Sponsor-hotpink.svg)](https://github.com/sponsors/raphink)
+# puppet-augeasproviders\_ssh
+
+[![Build Status](https://github.com/voxpupuli/puppet-augeasproviders_ssh/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-augeasproviders_ssh/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-augeasproviders_ssh/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-augeasproviders_ssh/actions/workflows/release.yml)
+[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-augeasproviders_ssh/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-augeasproviders_ssh)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/puppet/augeasproviders_ssh)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/puppet/augeasproviders_ssh)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/puppet/augeasproviders_ssh)
+[![Puppet Forge - ssshs](https://img.shields.io/puppetforge/f/puppet/augeasproviders_ssh.svg)](https://forge.puppetlabs.com/puppet/augeasproviders_ssh)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-augeasproviders_ssh)
+[![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-augeasproviders_ssh.svg)](LICENSE)
+[![Donated by Camptocamp](https://img.shields.io/badge/donated%20by-camptocamp-fb7047.svg)](#transfer-notice)
 
 
 # ssh: type/provider for ssh files for Puppet
@@ -21,19 +27,17 @@ know anything about Augeas to make use of it.
 ## Requirements
 
 Ensure both Augeas and ruby-augeas 0.3.0+ bindings are installed and working as
-normal.
+normal (both are usually bundled in the puppet agent AIO packages from Puppet Inc).
 
 See [Puppet/Augeas pre-requisites](http://docs.puppetlabs.com/guides/augeas.html#pre-requisites).
 
 ## Installing
 
-On Puppet 2.7.14+, the module can be installed easily ([documentation](http://docs.puppetlabs.com/puppet/latest/reference/modules_installing.html)):
+The module can be installed easily ([documentation](http://docs.puppetlabs.com/puppet/latest/reference/modules_installing.html)):
 
-    puppet module install herculesteam/augeasproviders_ssh
-
-You may see an error similar to this on Puppet 2.x ([#13858](http://projects.puppetlabs.com/issues/13858)):
-
-    Error 400 on SERVER: Puppet::Parser::AST::Resource failed with error ArgumentError: Invalid resource type `sshd_config` at ...
+```
+puppet module install herculesteam/augeasproviders_ssh
+```
 
 Ensure the module is present in your puppetmaster's own environment (it doesn't
 have to use it) and that the master has pluginsync enabled.  Run the agent on
@@ -45,7 +49,8 @@ loads them.
 
 ### Puppet versions
 
-Minimum of Puppet 2.7.
+In theory. Puppet 2.7 is the minimal version. We currently (2022-08-29) we test against Puppet 6 and 7.
+Check the Puppet version range in metadata.json for supported versions.
 
 ### Augeas versions
 
@@ -345,4 +350,4 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
 
 ## Issues
 
-Please file any issues or suggestions [on GitHub](https://github.com/hercules-team/augeasproviders_ssh/issues).
+Please file any issues or suggestions [on GitHub](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues).
