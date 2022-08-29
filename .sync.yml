@@ -17,3 +17,5 @@ spec/spec_helper.rb:
     - "$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/sshkeys_core/lib'))"
     # Allow for proper monkey patching of the sshkeys provider
     - "$LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_ssh/lib'))"
+spec/spec_helper_acceptance.rb:
+  unmanaged: false
