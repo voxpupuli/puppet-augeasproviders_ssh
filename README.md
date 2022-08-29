@@ -36,7 +36,7 @@ See [Puppet/Augeas pre-requisites](http://docs.puppetlabs.com/guides/augeas.html
 The module can be installed easily ([documentation](http://docs.puppetlabs.com/puppet/latest/reference/modules_installing.html)):
 
 ```
-puppet module install herculesteam/augeasproviders_ssh
+puppet module install puppet/augeasproviders_ssh
 ```
 
 Ensure the module is present in your puppetmaster's own environment (it doesn't
