@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Manages settings in OpenSSH's sshd_config file
 #
 # Copyright (c) 2015-2020 Raphaël Pinson
@@ -20,6 +22,7 @@ Puppet::Type.newtype(:sshd_config_match) do
 
     def insync?(is)
       return true if should == :positioned && is == :present && provider.in_position?
+
       super
     end
   end

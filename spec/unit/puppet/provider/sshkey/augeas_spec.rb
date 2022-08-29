@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:sshkey).provider(:augeas)
@@ -14,8 +16,8 @@ describe provider_class do
                key: 'DEADMEAT',
                hash_hostname: :true,
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(1)
@@ -31,10 +33,10 @@ describe provider_class do
                type: 'ssh-rsa',
                key: 'DEADMEAT',
                hash_hostname: :true,
-               host_aliases: ['foo', 'bar'],
+               host_aliases: %w[foo bar],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(3)
@@ -53,8 +55,8 @@ describe provider_class do
                key: 'DEADMEAT',
                hash_hostname: :false,
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(1)
@@ -69,11 +71,11 @@ describe provider_class do
                name: 'bar.example.com',
                type: 'ssh-rsa',
                key: 'DEADMEAT',
-               host_aliases: ['foo', 'bar'],
+               host_aliases: %w[foo bar],
                hash_hostname: :false,
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(1)
@@ -90,7 +92,8 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it 'lists instances' do
-      provider_class.stubs(:target).returns(target)
+      allow(provider_class).to receive(:target).and_return(target)
+
       inst = provider_class.instances.map do |p|
         {
           name: p.get(:name),
@@ -101,7 +104,7 @@ describe provider_class do
       end
 
       expect(inst.size).to eq(1)
-      expect(inst[0]).to eq(name: 'foo.example.com', type: 'ssh-rsa', key: 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDl1Lw2S7Vgl36/TfP+oeHsoPei1UEl9E8DO2KmSLcf+8HFxPMd/9K0gJwJHKLdNBPwpi/YTsgY0hY7JmrWaZzv6CmrfKTYr/xpCP0yF6hKTv/2JX499CH4Q8rx2mqvI8jI/aQhtRSgWolNMc84jLMwdborGMWGXpIGuneF/hn9BkMTCCWSig8MYcR2IAHzb4rpva3wqH/RpczWRuEtCBPkcvoCFrdBbkpFNSihexIM+y1MPq2a18qA2IcCwl/KUfip16tyrCWkr7tMNBbjx6b1EDurlUX75Gk8KuOVNZcjdgYNQLAC+JeYQkynYz/0hQMBZaHDPrHjhz62WFNdGC+B', host_aliases: ['foo']) # rubocop:disable Metrics/LineLength
+      expect(inst[0]).to eq(name: 'foo.example.com', type: 'ssh-rsa', key: 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDl1Lw2S7Vgl36/TfP+oeHsoPei1UEl9E8DO2KmSLcf+8HFxPMd/9K0gJwJHKLdNBPwpi/YTsgY0hY7JmrWaZzv6CmrfKTYr/xpCP0yF6hKTv/2JX499CH4Q8rx2mqvI8jI/aQhtRSgWolNMc84jLMwdborGMWGXpIGuneF/hn9BkMTCCWSig8MYcR2IAHzb4rpva3wqH/RpczWRuEtCBPkcvoCFrdBbkpFNSihexIM+y1MPq2a18qA2IcCwl/KUfip16tyrCWkr7tMNBbjx6b1EDurlUX75Gk8KuOVNZcjdgYNQLAC+JeYQkynYz/0hQMBZaHDPrHjhz62WFNdGC+B', host_aliases: ['foo'])
     end
 
     it 'modifies clear value' do
@@ -110,8 +113,8 @@ describe provider_class do
                type: 'ssh-rsa',
                key: 'DEADMEAT',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.get('./2/key').should eq('DEADMEAT')
@@ -121,10 +124,10 @@ describe provider_class do
     it 'modifies aliases of clear value' do
       apply!(Puppet::Type.type(:sshkey).new(
                name: 'foo.example.com',
-               host_aliases: ['foo', 'bar'],
+               host_aliases: %w[foo bar],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./2/alias').size.should eq(2)
@@ -139,8 +142,8 @@ describe provider_class do
                type: 'ssh-rsa',
                key: 'DEADMEAT',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.get('./1/key').should eq('DEADMEAT')
@@ -154,8 +157,8 @@ describe provider_class do
                key: 'DEADMEAT',
                host_aliases: ['foo'],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         # Should not add an alias node
@@ -173,8 +176,8 @@ describe provider_class do
                key: 'ABCDE',
                host_aliases: ['qux'],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(3)
@@ -188,8 +191,8 @@ describe provider_class do
                name: 'foo.example.com',
                ensure: 'hashed',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(4)
@@ -208,8 +211,8 @@ describe provider_class do
                name: 'foo.example.com',
                ensure: 'absent',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(2)
@@ -222,8 +225,8 @@ describe provider_class do
                ensure: 'absent',
                host_aliases: ['qux'],
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
         aug.match('./*[label()!="#comment"]').size.should eq(1)
@@ -240,10 +243,9 @@ describe provider_class do
                     name: 'foo.example.com',
                     key: 'DEADMEAT',
                     target: target,
-                    provider: 'augeas',
-      ))
+                    provider: 'augeas'
+                  ))
 
-      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)

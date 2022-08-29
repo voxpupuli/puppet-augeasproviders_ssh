@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Manages settings in OpenSSH's ssh_config file
 #
 # Copyright (c) 2012-2020 Raphaël Pinson
@@ -38,9 +40,7 @@ All other parameters take a string. When passing an array to other parameters, o
 `/etc/ssh/ssh_config`."
 
     validate do |v|
-      unless Puppet::Util.absolute_path? v
-        raise ArgumentError, 'target must be an absolute path'
-      end
+      raise ArgumentError, 'target must be an absolute path' unless Puppet::Util.absolute_path? v
     end
   end
 

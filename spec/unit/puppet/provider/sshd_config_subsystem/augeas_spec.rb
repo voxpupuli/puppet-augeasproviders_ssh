@@ -1,13 +1,14 @@
 #!/usr/bin/env rspec
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:sshd_config_subsystem).provider(:augeas)
 
 describe provider_class do
-  before :each do
-    FileTest.stubs(:exist?).returns false
-    FileTest.stubs(:exist?).with('/etc/ssh/sshd_config').returns true
+  before do
+    allow(FileTest).to receive(:exist?).and_return(false)
+    allow(FileTest).to receive(:exist?).with('/etc/ssh/ssh_config').and_return(true)
   end
 
   context 'with empty file' do
@@ -19,8 +20,8 @@ describe provider_class do
                name: 'sftp',
                command: '/usr/lib/openssh/sftp-server',
                target: target,
-               provider: 'augeas',
-      ))
+               provider: 'augeas'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('Subsystem/sftp')).to eq('/usr/lib/openssh/sftp-server')
@@ -33,8 +34,8 @@ describe provider_class do
                command: '/usr/lib/openssh/sftp-server',
                target: target,
                provider: 'augeas',
-               comment: 'Use the external subsystem',
-      ))
+               comment: 'Use the external subsystem'
+             ))
 
       aug_open(target, 'Sshd.lns') do |aug|
         expect(aug.get('#comment[following-sibling::Subsystem[sftp]]')).to eq('sftp: Use the external subsystem')
@@ -47,7 +48,8 @@ describe provider_class do
     let(:target) { tmptarget.path }
 
     it 'lists instances' do
-      provider_class.stubs(:target).returns(target)
+      allow(provider_class).to receive(:target).and_return(target)
+
       inst = provider_class.instances.map do |p|
         {
           name: p.get(:name),
@@ -67,8 +69,8 @@ describe provider_class do
                  name: 'mysub',
                  command: '/bin/bash',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Subsystem/mysub')).to eq('/bin/bash')
@@ -81,8 +83,8 @@ describe provider_class do
                  command: '/usr/lib/openssh/sftp-server2',
                  target: target,
                  provider: 'augeas',
-                 comment: 'Use the external subsystem',
-        ))
+                 comment: 'Use the external subsystem'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('#comment[following-sibling::Subsystem[sftp2]][last()]')).to eq('sftp2: Use the external subsystem')
@@ -101,8 +103,8 @@ describe provider_class do
                  name: 'sftp',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.match(expr)).to eq([])
@@ -114,8 +116,8 @@ describe provider_class do
                  name: 'sftp',
                  command: '/usr/lib/openssh/sftp-server',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('#comment[following-sibling::Subsystem[sftp][1]]')).to eq(nil)
@@ -129,8 +131,8 @@ describe provider_class do
                  name: 'sftp',
                  command: '/bin/bash',
                  target: target,
-                 provider: 'augeas',
-        ))
+                 provider: 'augeas'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('Subsystem/sftp')).to eq('/bin/bash')
@@ -143,8 +145,8 @@ describe provider_class do
                  command: '/usr/lib/openssh/sftp-server',
                  target: target,
                  provider: 'augeas',
-                 comment: 'A different comment',
-        ))
+                 comment: 'A different comment'
+               ))
 
         aug_open(target, 'Sshd.lns') do |aug|
           expect(aug.get('#comment[following-sibling::Subsystem[sftp]][last()]')).to eq('sftp: A different comment')
@@ -162,10 +164,9 @@ describe provider_class do
                     name: 'sftp',
                     command: '/bin/bash',
                     target: target,
-                    provider: 'augeas',
-      ))
+                    provider: 'augeas'
+                  ))
 
-      # rubocop:disable RSpec/InstanceVariable
       expect(txn.any_failed?).not_to eq(nil)
       expect(@logs.first.level).to eq(:err)
       expect(@logs.first.message.include?(target)).to eq(true)

@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 # Alternative Augeas-based providers for Puppet
 #
@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0
 
 raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
+
 Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc 'Uses Augeas API to update an sshd_config parameter'
 
@@ -17,7 +18,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
 
   resource_path do |resource|
     base = base_path(resource)
-    key = (resource[:key]) ? resource[:key] : resource[:name]
+    key = resource[:key] || resource[:name]
     "#{base}/*[label()=~regexp('#{key}', 'i')]"
   end
 
@@ -30,7 +31,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
   end
 
   def self.get_value(aug, pathx)
-    aug.match(pathx).map { |vp|
+    aug.match(pathx).map do |vp|
       # Augeas lens does transparent multi-node (no counte reset) so check for any int
       if aug.match("#{vp}/*[label()=~regexp('[0-9]*')]").empty?
         aug.get(vp)
@@ -39,7 +40,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
           aug.get(svp)
         end
       end
-    }.flatten
+    end.flatten
   end
 
   def self.set_value(aug, base, path, label, value)
@@ -116,12 +117,13 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
       resources = []
       # Ordinary settings outside of match blocks
       # Find all unique setting names, then find all instances of it
-      settings = aug.match("$target/*[label()!='Match']")
-                    .map { |spath| path_label(aug, spath) }
-                    .uniq.reject { |name| name.start_with?('#', '@') }
+      settings = aug.match("$target/*[label()!='Match']").
+                 map { |spath| path_label(aug, spath) }.
+                 uniq.reject { |name| name.start_with?('#', '@') }
 
       settings.each do |name|
         next if name.casecmp('subsystem').zero?
+
         value = get_value(aug, "$target/#{name}")
         entry = { ensure: :present, name: name, value: value }
         resources << new(entry) if entry[:value]
@@ -137,12 +139,13 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
         end
         cond_str = conditions.join(' ')
 
-        settings = aug.match("#{mpath}/Settings/*")
-                      .map { |spath| path_label(aug, spath) }
-                      .uniq.reject { |name| name.start_with?('#', '@') }
+        settings = aug.match("#{mpath}/Settings/*").
+                   map { |spath| path_label(aug, spath) }.
+                   uniq.reject { |name| name.start_with?('#', '@') }
 
         settings.each do |name|
           next if name.casecmp('subsystem').zero?
+
           value = get_value(aug, "#{mpath}/Settings/#{name}")
           entry = { ensure: :present, name: name,
                     value: value, condition: cond_str }
@@ -165,31 +168,25 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
   end
 
   def self.match_exists?(aug, resource)
-    cond_str = (resource[:condition]) ? match_conditions(resource) : ''
+    cond_str = resource[:condition] ? match_conditions(resource) : ''
     !aug.match("$target/Match#{cond_str}").empty?
   end
 
   def create
     base_path = self.class.base_path(resource)
     augopen! do |aug|
-      key = resource[:key] ? resource[:key] : resource[:name]
+      key = resource[:key] || resource[:name]
       if resource[:condition] && !self.class.match_exists?(aug, resource)
         aug.insert('$target/*[last()]', 'Match', false)
         resource[:condition].each do |k, v|
           aug.set("$target/Match[last()]/Condition/#{k}", v)
         end
       end
-      if key.casecmp('port').zero? && !aug.match("#{base_path}/ListenAddress").empty?
-        aug.insert("#{base_path}/ListenAddress[1]", key, true)
-      end
+      aug.insert("#{base_path}/ListenAddress[1]", key, true) if key.casecmp('port').zero? && !aug.match("#{base_path}/ListenAddress").empty?
 
-      if key.casecmp('listenaddress').zero? && !aug.match("#{base_path}/AddressFamily").empty?
-        aug.insert("#{base_path}/AddressFamily", key, false)
-      end
+      aug.insert("#{base_path}/AddressFamily", key, false) if key.casecmp('listenaddress').zero? && !aug.match("#{base_path}/AddressFamily").empty?
 
-      if key.casecmp('addressfamily').zero? && !aug.match("#{base_path}/ListenAddress").empty?
-        aug.insert("#{base_path}/ListenAddress", key, true)
-      end
+      aug.insert("#{base_path}/ListenAddress", key, true) if key.casecmp('addressfamily').zero? && !aug.match("#{base_path}/ListenAddress").empty?
 
       self.class.set_value(aug, base_path, "#{base_path}/#{key}", key, resource[:value])
       self.class.set_comment(aug, base_path, key, resource[:comment]) if resource[:comment]
@@ -211,24 +208,24 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
 
   def value=(value)
     augopen! do |aug|
-      key = resource[:key] ? resource[:key] : resource[:name]
+      key = resource[:key] || resource[:name]
       self.class.set_value(aug, self.class.base_path(resource), resource_path, key, value)
     end
   end
 
   def comment
     base_path = self.class.base_path(resource)
-    key = resource[:key] ? resource[:key] : resource[:name]
+    key = resource[:key] || resource[:name]
     augopen do |aug|
       comment = aug.get("#{base_path}/#comment[following-sibling::*[1][label() =~ regexp('#{key}', 'i')]][. =~ regexp('#{key}:.*', 'i')]")
-      comment.sub!(%r{^#{key}:\s*}i, '') if comment
+      comment&.sub!(%r{^#{key}:\s*}i, '')
       comment || ''
     end
   end
 
   def comment=(value)
     base_path = self.class.base_path(resource)
-    key = resource[:key] ? resource[:key] : resource[:name]
+    key = resource[:key] || resource[:name]
     augopen! do |aug|
       self.class.set_comment(aug, base_path, key, value)
     end
@@ -239,9 +236,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
     if value.empty?
       aug.rm(cmtnode)
     else
-      if aug.match(cmtnode).empty?
-        aug.insert("#{base}/#{name}", '#comment', true)
-      end
+      aug.insert("#{base}/#{name}", '#comment', true) if aug.match(cmtnode).empty?
       aug.set("#{base}/#comment[following-sibling::*[1][label() =~ regexp('#{name}', 'i')]]",
               "#{name}: #{value}")
     end

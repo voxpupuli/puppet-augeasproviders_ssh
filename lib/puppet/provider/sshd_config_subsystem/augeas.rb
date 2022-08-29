@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 # Alternative Augeas-based providers for Puppet
 #
@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0
 
 raise('Missing augeasproviders_core dependency') if Puppet::Type.type(:augeasprovider).nil?
+
 Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, parent: Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc 'Uses Augeas API to update a Subsystem parameter in sshd_config.'
 
@@ -24,6 +25,7 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, parent: Puppet::Type.
       aug.match('$target/Subsystem/*').map do |hpath|
         command = aug.get(hpath)
         next unless command
+
         new(ensure: :present,
             name: path_label(aug, hpath),
             command: command)
@@ -53,7 +55,7 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, parent: Puppet::Type.
   def comment
     augopen do |aug|
       comment = aug.get("$target/#comment[following-sibling::*[1][label() =~ regexp('Subsystem', 'i') and #{resource[:name]}]]")
-      comment.sub!(%r{^#{resource[:name]}:\s*}i, '') if comment
+      comment&.sub!(%r{^#{resource[:name]}:\s*}i, '')
       comment || ''
     end
   end
@@ -65,9 +67,7 @@ Puppet::Type.type(:sshd_config_subsystem).provide(:augeas, parent: Puppet::Type.
       if value.empty?
         aug.rm(cmtnode)
       else
-        if aug.match(cmtnode).empty?
-          aug.insert("$target/*[label()=~regexp('Subsystem', 'i') and #{resource[:name]}]", '#comment', true)
-        end
+        aug.insert("$target/*[label()=~regexp('Subsystem', 'i') and #{resource[:name]}]", '#comment', true) if aug.match(cmtnode).empty?
         aug.set(cmtnode, "#{resource[:name]}: #{resource[:comment]}")
       end
     end
