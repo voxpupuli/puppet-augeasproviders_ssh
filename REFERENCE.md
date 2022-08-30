@@ -13,7 +13,7 @@
 
 ## Resource types
 
-### `ssh_config`
+### <a name="ssh_config"></a>`ssh_config`
 
 Manages settings in an OpenSSH ssh_config file.
 
@@ -53,32 +53,38 @@ All other parameters take a string. When passing an array to other parameters, o
 
 The following parameters are available in the `ssh_config` type.
 
-##### `host`
+* [`host`](#host)
+* [`key`](#key)
+* [`name`](#name)
+* [`provider`](#provider)
+* [`target`](#target)
+
+##### <a name="host"></a>`host`
 
 Host condition for the entry.
 
-##### `key`
+##### <a name="key"></a>`key`
 
 Overrides setting name to prevent resource conflicts if `host` is
 given.
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the setting, or a unique string if `host` given.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `ssh_config` resource. You will seldom need to specify this --- Puppet will usually
 discover the appropriate provider for your platform.
 
-##### `target`
+##### <a name="target"></a>`target`
 
 The file in which to store the settings, defaults to
 `/etc/ssh/ssh_config`.
 
-### `sshd_config`
+### <a name="sshd_config"></a>`sshd_config`
 
 Manages settings in an OpenSSH sshd_config file.
 
@@ -118,7 +124,8 @@ Value to change the setting to. The follow parameters take an array of values:
 - DenyUsers;
 - Port;
 - KexAlgorithms;
-- MACs.
+- MACs;
+- HostKeyAlgorithms.
 
 All other parameters take a string. When passing an array to other parameters, only the first value in the array will be considered.
 
@@ -126,7 +133,14 @@ All other parameters take a string. When passing an array to other parameters, o
 
 The following parameters are available in the `sshd_config` type.
 
-##### `array_append`
+* [`array_append`](#array_append)
+* [`condition`](#condition)
+* [`key`](#key)
+* [`name`](#name)
+* [`provider`](#provider)
+* [`target`](#target)
+
+##### <a name="array_append"></a>`array_append`
 
 Valid values: ``false``, ``true``
 
@@ -134,7 +148,7 @@ Whether to add to existing array values or replace all values.
 
 Default value: ``false``
 
-##### `condition`
+##### <a name="condition"></a>`condition`
 
 Match group condition for the entry,
 in the format:
@@ -149,28 +163,28 @@ whitespace.  This is used if the `Match` block has multiple criteria.
 
     condition => 'Host example.net User root'
 
-##### `key`
+##### <a name="key"></a>`key`
 
 Overrides setting name to prevent resource conflicts if `condition` is
 given.
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the setting, or a unique string if `condition` given.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sshd_config` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `target`
+##### <a name="target"></a>`target`
 
 The file in which to store the settings, defaults to
 `/etc/ssh/sshd_config`.
 
-### `sshd_config_match`
+### <a name="sshd_config_match"></a>`sshd_config_match`
 
 Manages Match groups in an OpenSSH sshd_config file.
 
@@ -196,32 +210,38 @@ Default value: `present`
 
 The following parameters are available in the `sshd_config_match` type.
 
-##### `condition`
+* [`condition`](#condition)
+* [`name`](#name)
+* [`position`](#position)
+* [`provider`](#provider)
+* [`target`](#target)
+
+##### <a name="condition"></a>`condition`
 
 namevar
 
 The condition of the Match group
 
-##### `name`
+##### <a name="name"></a>`name`
 
 The default namevar
 
-##### `position`
+##### <a name="position"></a>`position`
 
 Where to place the new entry
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sshd_config_match` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `target`
+##### <a name="target"></a>`target`
 
 namevar
 
 The file in which to manage the sshd_config_match entry
 
-### `sshd_config_subsystem`
+### <a name="sshd_config_subsystem"></a>`sshd_config_subsystem`
 
 Manages Subsystem settings in an OpenSSH sshd_config file.
 
@@ -251,18 +271,22 @@ Default value: `present`
 
 The following parameters are available in the `sshd_config_subsystem` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`target`](#target)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the subsystem to set.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sshd_config_subsystem` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
 
-##### `target`
+##### <a name="target"></a>`target`
 
 The file in which to store the settings, defaults to
 `/etc/ssh/sshd_config`.
