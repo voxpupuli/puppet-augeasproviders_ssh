@@ -61,7 +61,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, parent: Puppet::Type.type(:augea
   end
 
   def self.set_value(aug, base, path, label, value)
-    if label =~ %r{Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile}i
+    if label =~ %r{Ciphers|SendEnv|MACs|(HostKey|Kex)Algorithms|GlobalKnownHostsFile|PubkeyAcceptedKeyTypes}i
       set_array_value(aug, path, value)
     else
       set_simple_value(aug, base, path, label, value)
