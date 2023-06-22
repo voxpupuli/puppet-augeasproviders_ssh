@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v6.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v6.0.0) (2023-06-22)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/v5.0.0...v6.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 6 support [\#88](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/88) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- puppet/augeasproviders\_core: Allow 4.x [\#91](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/91) ([bastelfreak](https://github.com/bastelfreak))
+- Add puppet 8 support [\#90](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/90) ([bastelfreak](https://github.com/bastelfreak))
+- Add Rocky 9 support [\#87](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/87) ([bastelfreak](https://github.com/bastelfreak))
+- Add support of PubkeyAcceptedKeyTypes for ssh\_config [\#81](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/81) ([hbenali](https://github.com/hbenali))
+
+**Merged pull requests:**
+
+- Fix incorrect Apache-2 license [\#85](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/85) ([bastelfreak](https://github.com/bastelfreak))
+- Fix License detection [\#84](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/84) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v5.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v5.0.0) (2022-08-30)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/4.0.0...v5.0.0)
