@@ -1,6 +1,6 @@
 {
   "name": "puppet-augeasproviders_ssh",
-  "version": "6.0.0",
+  "version": "6.0.1-rc0",
   "author": "Vox Pupuli",
   "summary": "Augeas-based ssh types and providers for Puppet",
   "license": "Apache-2.0",
