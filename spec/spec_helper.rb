@@ -27,3 +27,4 @@ $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_core/lib
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/sshkeys_core/lib'))
 
 $LOAD_PATH.unshift(File.join(__dir__, 'fixtures/modules/augeasproviders_ssh/lib'))
+Dir['./spec/support/spec/**/*.rb'].sort.each { |f| require f }
