@@ -181,9 +181,7 @@ Puppet::Type.type(:sshkey).provide(:augeas, parent: Puppet::Type.type(:augeaspro
     augopen do |aug|
       if resource_hashed?(aug)
         # We cannot know about unmanaged aliases when hashed
-        resource[:host_aliases].map do |a|
-          a if self.class.find_resource(aug, a)
-        end.compact
+        resource[:host_aliases].select { |a| self.class.find_resource(aug, a) }
       else
         aug.match('$resource/alias').map do |a|
           aug.get(a)

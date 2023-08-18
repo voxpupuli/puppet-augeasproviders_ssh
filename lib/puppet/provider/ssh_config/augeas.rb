@@ -103,7 +103,7 @@ Puppet::Type.type(:ssh_config).provide(:augeas, parent: Puppet::Type.type(:augea
         aug.insert(lastsp, label, false)
       else
         # Prefer to create the node next to a commented out entry
-        commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z\.].*)?')]")
+        commented = aug.match("#{base}/#comment[.=~regexp('#{label}([^a-z.].*)?')]")
         aug.insert(commented.first, label, false) unless commented.empty?
       end
       aug.set("#{path}[last()]", v)
