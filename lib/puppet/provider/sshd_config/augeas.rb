@@ -44,7 +44,7 @@ Puppet::Type.type(:sshd_config).provide(:augeas, parent: Puppet::Type.type(:auge
   end
 
   def self.set_value(aug, base, path, label, value)
-    if label =~ %r{^(((Allow|Deny)(Groups|Users))|AcceptEnv|MACs|(HostKey|Kex)Algorithms|Ciphers)$}i
+    if parsed_as?("#{label} FOO\n", "#{label}/1", lens)
       set_array_value(aug, base, path, label, value)
     else
       set_simple_value(aug, base, path, label, value)
