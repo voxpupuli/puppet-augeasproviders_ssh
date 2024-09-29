@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v7.0.0) (2024-09-29)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/v6.0.0...v7.0.0)
+
+**Breaking changes:**
+
+- Drop support for multiple EOL OSes [\#110](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/110) ([traylenator](https://github.com/traylenator))
+
+**Implemented enhancements:**
+
+- Add support for Debian 12 and Fedora 40 [\#111](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/111) ([traylenator](https://github.com/traylenator))
+
+**Closed issues:**
+
+- cannot pull via the Forge [\#38](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues/38)
+
+**Merged pull requests:**
+
+- Drop redundant hiera files [\#109](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/109) ([traylenator](https://github.com/traylenator))
+- Update git:// URLs to use https:// [\#94](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/94) ([herver](https://github.com/herver))
+- Treat values as simple/array based on local lens [\#65](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/65) ([tedgarb](https://github.com/tedgarb))
+
 ## [v6.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v6.0.0) (2023-06-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/v5.0.0...v6.0.0)
