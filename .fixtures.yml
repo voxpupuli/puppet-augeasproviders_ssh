@@ -1,4 +1,5 @@
+---
 fixtures:
   repositories:
-    augeasproviders_core: "https://github.com/voxpupuli/augeasproviders_core.git"
-    sshkeys_core: "https://github.com/puppetlabs/puppetlabs-sshkeys_core"
+    augeasproviders_core: https://github.com/voxpupuli/augeasproviders_core.git
+    sshkeys_core: https://github.com/puppetlabs/puppetlabs-sshkeys_core
