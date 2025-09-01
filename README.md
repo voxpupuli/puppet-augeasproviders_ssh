@@ -348,6 +348,20 @@ Type documentation can be generated with `puppet doc -r type` or viewed on the
       target  => "/root/.ssh/known_hosts",
     }
 
+### Hiera expansion of types
+
+If the main class is included with `include augeasproviders_ssh` then types can created from a hash.
+
+```yaml
+augeasproviders_ssh::sshd_configs:
+  AllowAgentForwarding:
+    ensure: 'present'
+    value: 'yes'
+  PermitRootLogin:
+    ensure: 'present'
+    value: 'yes'
+```
+
 ## Issues
 
 Please file any issues or suggestions [on GitHub](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues).
