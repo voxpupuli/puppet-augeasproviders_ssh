@@ -64,7 +64,7 @@ describe provider_class do
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
-        expect(aug.get('GSSAPIKexAlgorithms')).to eq('gss-group14-sha1-')
+        expect(aug.get('GSSAPIKexAlgorithms/1')).to eq('gss-group14-sha1-')
       end
     end
 
