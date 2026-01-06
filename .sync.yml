@@ -7,6 +7,7 @@ Gemfile:
     ':test':
       - gem: ruby-augeas
 spec/spec_helper.rb:
+  hiera_config: spec/hiera.yaml
   spec_overrides:
     - "require 'fixtures/modules/augeasproviders_core/spec/support/spec/psh_fixtures'"
     - "require 'augeas_spec'"
