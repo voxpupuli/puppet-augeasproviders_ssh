@@ -19,7 +19,7 @@ describe provider_class do
                name: 'PermitRootLogin',
                value: 'yes',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -32,7 +32,7 @@ describe provider_class do
                name: 'AllowGroups',
                value: %w[sshgroups admins],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -47,7 +47,7 @@ describe provider_class do
                value: 'example_user',
                target: target,
                provider: 'augeas',
-               comment: 'Deny example_user access'
+               comment: 'Deny example_user access',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -60,7 +60,7 @@ describe provider_class do
                name: 'GSSAPIKexAlgorithms',
                value: 'gss-group14-sha1-',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -74,7 +74,7 @@ describe provider_class do
                condition: 'Host foo User root',
                value: 'yes',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -92,15 +92,15 @@ describe provider_class do
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'X11Forwarding',
               condition: 'Host foo User root',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
       end
@@ -112,15 +112,15 @@ describe provider_class do
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'Global X11Forwarding',
               key: 'X11Forwarding',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.to raise_error
       end
@@ -132,7 +132,7 @@ describe provider_class do
               name: 'X11Forwarding',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:sshd_config).new(
               name: 'Global X11Forwarding',
@@ -140,8 +140,8 @@ describe provider_class do
               condition: 'User foo',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.not_to raise_error
       end
@@ -189,7 +189,7 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -203,7 +203,7 @@ describe provider_class do
                  condition: 'Host *.example.net User *',
                  value: '2222',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -216,7 +216,7 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="no default banner path"]][label()!="Match"]', '
@@ -234,7 +234,7 @@ describe provider_class do
                  name: 'usedns',
                  value: 'no',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="ShowPatchLevel no"]][label()!="Match"]', '
@@ -259,7 +259,7 @@ describe provider_class do
                  name: 'AllowUsers',
                  value: %w[ssh foo],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -273,7 +273,7 @@ describe provider_class do
                  name: 'syslogFacility',
                  target: target,
                  provider: 'augeas',
-                 comment: 'more secure'
+                 comment: 'more secure',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -287,7 +287,7 @@ describe provider_class do
                  condition: 'Host *.example.net',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -307,7 +307,7 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -325,7 +325,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -344,7 +344,7 @@ describe provider_class do
                  condition: 'Host *.example.net User *',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -357,7 +357,7 @@ describe provider_class do
                  name: 'AllowGroups',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -372,7 +372,7 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -387,7 +387,7 @@ describe provider_class do
                  condition: 'User anoncvs',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -400,7 +400,7 @@ describe provider_class do
                  name: 'AcceptEnv',
                  value: %w[BAR LC_FOO],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -415,7 +415,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1', '192.168.3.1'],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -431,7 +431,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: '192.168.1.1',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -446,7 +446,7 @@ describe provider_class do
                  value: 'AUTHPRIV',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment'
+                 comment: 'This is a different comment',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -459,7 +459,7 @@ describe provider_class do
                  name: 'PaSswordaUtheNticAtion',
                  value: 'no',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -475,7 +475,7 @@ describe provider_class do
                    value: %w[BAR LC_TIME],
                    array_append: true,
                    target: target,
-                   provider: 'augeas'
+                   provider: 'augeas',
                  ))
 
           aug_open(target, 'Sshd.lns') do |aug|
@@ -497,7 +497,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1'],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -512,7 +512,7 @@ describe provider_class do
                  name: 'AcceptEnv',
                  value: %w[BAR LC_FOO],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -527,7 +527,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: ['192.168.1.1', '192.168.2.1', '192.168.3.1'],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -543,7 +543,7 @@ describe provider_class do
                  name: 'ListenAddress',
                  value: '192.168.1.1',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -557,7 +557,7 @@ describe provider_class do
                  name: 'Banner',
                  value: '/etc/issue',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         augparse_filter(target, 'Sshd.lns', '*[preceding-sibling::#comment[.="no default banner path"]]', '
@@ -574,7 +574,7 @@ describe provider_class do
                  name: 'Port',
                  value: '2222',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -589,7 +589,7 @@ describe provider_class do
                  name: 'PermitRootLogin',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -609,7 +609,7 @@ describe provider_class do
                     name: 'PermitRootLogin',
                     value: 'yes',
                     target: target,
-                    provider: 'augeas'
+                    provider: 'augeas',
                   ))
 
       expect(txn.any_failed?).not_to eq(nil)
@@ -651,7 +651,7 @@ describe provider_class do
                  name: key,
                  value: value,
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         file_hash = create_file_hash(provider_class)

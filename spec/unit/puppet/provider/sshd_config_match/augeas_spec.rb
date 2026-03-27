@@ -19,7 +19,7 @@ describe provider_class do
                name: 'Host foo',
                target: target,
                ensure: :present,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -33,7 +33,7 @@ describe provider_class do
                target: target,
                ensure: :present,
                comment: 'manage host foo',
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -67,7 +67,7 @@ describe provider_class do
                  name: 'Foo bar',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -82,7 +82,7 @@ describe provider_class do
                  position: 'before first match',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -97,7 +97,7 @@ describe provider_class do
                  position: 'before User * Host *.example.net',
                  target: target,
                  ensure: :present,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -111,7 +111,7 @@ describe provider_class do
                  name: 'User bar',
                  target: target,
                  comment: 'bar is a user',
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -126,7 +126,7 @@ describe provider_class do
                  name: 'User anoncvs',
                  target: target,
                  ensure: :absent,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -139,7 +139,7 @@ describe provider_class do
                  name: 'User anoncvs',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -155,7 +155,7 @@ describe provider_class do
                  position: 'after last match',
                  target: target,
                  ensure: :positioned,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -170,7 +170,7 @@ describe provider_class do
                  name: 'User anoncvs',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment'
+                 comment: 'This is a different comment',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -188,7 +188,7 @@ describe provider_class do
       txn = apply(Puppet::Type.type(:sshd_config_match).new(
                     name: 'Host foo',
                     target: target,
-                    provider: 'augeas'
+                    provider: 'augeas',
                   ))
 
       expect(txn.any_failed?).not_to eq(nil)

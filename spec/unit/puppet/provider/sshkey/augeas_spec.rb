@@ -16,7 +16,7 @@ describe provider_class do
                key: 'DEADMEAT',
                hash_hostname: :true,
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -35,7 +35,7 @@ describe provider_class do
                hash_hostname: :true,
                host_aliases: %w[foo bar],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -55,7 +55,7 @@ describe provider_class do
                key: 'DEADMEAT',
                hash_hostname: :false,
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -74,7 +74,7 @@ describe provider_class do
                host_aliases: %w[foo bar],
                hash_hostname: :false,
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -113,7 +113,7 @@ describe provider_class do
                type: 'ssh-rsa',
                key: 'DEADMEAT',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -126,7 +126,7 @@ describe provider_class do
                name: 'foo.example.com',
                host_aliases: %w[foo bar],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -142,7 +142,7 @@ describe provider_class do
                type: 'ssh-rsa',
                key: 'DEADMEAT',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -157,7 +157,7 @@ describe provider_class do
                key: 'DEADMEAT',
                host_aliases: ['foo'],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -176,7 +176,7 @@ describe provider_class do
                key: 'ABCDE',
                host_aliases: ['qux'],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -191,7 +191,7 @@ describe provider_class do
                name: 'foo.example.com',
                ensure: 'hashed',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -211,7 +211,7 @@ describe provider_class do
                name: 'foo.example.com',
                ensure: 'absent',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -225,7 +225,7 @@ describe provider_class do
                ensure: 'absent',
                host_aliases: ['qux'],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Known_Hosts.lns') do |aug|
@@ -243,7 +243,7 @@ describe provider_class do
                     name: 'foo.example.com',
                     key: 'DEADMEAT',
                     target: target,
-                    provider: 'augeas'
+                    provider: 'augeas',
                   ))
 
       expect(txn.any_failed?).not_to eq(nil)
