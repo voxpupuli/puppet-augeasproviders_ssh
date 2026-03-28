@@ -78,7 +78,7 @@ All other parameters take a string. When passing an array to other parameters, o
 
         super(is_arr | Array(new_value))
       else
-        super(new_value)
+        super
       end
     end
   end

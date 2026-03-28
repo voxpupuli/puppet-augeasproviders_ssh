@@ -20,7 +20,7 @@ describe provider_class do
                name: 'sftp',
                command: '/usr/lib/openssh/sftp-server',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -34,7 +34,7 @@ describe provider_class do
                command: '/usr/lib/openssh/sftp-server',
                target: target,
                provider: 'augeas',
-               comment: 'Use the external subsystem'
+               comment: 'Use the external subsystem',
              ))
 
       aug_open(target, 'Sshd.lns') do |aug|
@@ -69,7 +69,7 @@ describe provider_class do
                  name: 'mysub',
                  command: '/bin/bash',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -83,7 +83,7 @@ describe provider_class do
                  command: '/usr/lib/openssh/sftp-server2',
                  target: target,
                  provider: 'augeas',
-                 comment: 'Use the external subsystem'
+                 comment: 'Use the external subsystem',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -103,7 +103,7 @@ describe provider_class do
                  name: 'sftp',
                  ensure: 'absent',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -116,7 +116,7 @@ describe provider_class do
                  name: 'sftp',
                  command: '/usr/lib/openssh/sftp-server',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -131,7 +131,7 @@ describe provider_class do
                  name: 'sftp',
                  command: '/bin/bash',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -145,7 +145,7 @@ describe provider_class do
                  command: '/usr/lib/openssh/sftp-server',
                  target: target,
                  provider: 'augeas',
-                 comment: 'A different comment'
+                 comment: 'A different comment',
                ))
 
         aug_open(target, 'Sshd.lns') do |aug|
@@ -164,7 +164,7 @@ describe provider_class do
                     name: 'sftp',
                     command: '/bin/bash',
                     target: target,
-                    provider: 'augeas'
+                    provider: 'augeas',
                   ))
 
       expect(txn.any_failed?).not_to eq(nil)

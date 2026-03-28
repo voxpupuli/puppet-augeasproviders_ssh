@@ -19,7 +19,7 @@ describe provider_class do
                name: 'ForwardAgent',
                value: 'yes',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Ssh.lns') do |aug|
@@ -32,7 +32,7 @@ describe provider_class do
                name: 'GlobalKnownHostsFile',
                value: ['/etc/ssh/ssh_known_hosts', '/etc/ssh/ssh_known_hosts2'],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Ssh.lns') do |aug|
@@ -46,7 +46,7 @@ describe provider_class do
                name: 'SendEnv',
                value: %w[LANG LC_TYPE],
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Ssh.lns') do |aug|
@@ -61,7 +61,7 @@ describe provider_class do
                host: 'example.net',
                value: 'yes',
                target: target,
-               provider: 'augeas'
+               provider: 'augeas',
              ))
 
       aug_open(target, 'Ssh.lns') do |aug|
@@ -76,7 +76,7 @@ describe provider_class do
                value: 'example_user',
                target: target,
                provider: 'augeas',
-               comment: 'Deny example_user access'
+               comment: 'Deny example_user access',
              ))
 
       aug_open(target, 'Ssh.lns') do |aug|
@@ -92,15 +92,15 @@ describe provider_class do
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'ForwardAgent',
               host: 'example.net',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.to raise_error(Puppet::Resource::Catalog::DuplicateResourceError)
       end
@@ -112,15 +112,15 @@ describe provider_class do
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'Example ForwardAgent',
               key: 'ForwardAgent',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.to raise_error
       end
@@ -132,7 +132,7 @@ describe provider_class do
               name: 'ForwardAgent',
               value: 'no',
               target: target,
-              provider: 'augeas'
+              provider: 'augeas',
             ),
             Puppet::Type.type(:ssh_config).new(
               name: 'Example ForwardAgent',
@@ -140,8 +140,8 @@ describe provider_class do
               host: 'example.net',
               value: 'yes',
               target: target,
-              provider: 'augeas'
-            )
+              provider: 'augeas',
+            ),
           )
         end.not_to raise_error
       end
@@ -180,7 +180,7 @@ describe provider_class do
                  host: 'example.net',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -194,7 +194,7 @@ describe provider_class do
                  host: 'example.net',
                  value: ['LC_*', 'LANG'],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -210,7 +210,7 @@ describe provider_class do
                  value: 'example_user',
                  target: target,
                  provider: 'augeas',
-                 comment: 'Deny example_user access'
+                 comment: 'Deny example_user access',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -226,7 +226,7 @@ describe provider_class do
                  ensure: 'absent',
                  host: '*',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -240,7 +240,7 @@ describe provider_class do
                  ensure: 'absent',
                  host: '*',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -256,7 +256,7 @@ describe provider_class do
                  host: '*',
                  value: 'no',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -270,7 +270,7 @@ describe provider_class do
                  host: '*',
                  target: target,
                  provider: 'augeas',
-                 comment: 'This is a different comment'
+                 comment: 'This is a different comment',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -284,7 +284,7 @@ describe provider_class do
                  host: '*',
                  value: %w[foo bar],
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -299,7 +299,7 @@ describe provider_class do
                  name: 'GssaPiaUthentication',
                  value: 'yes',
                  target: target,
-                 provider: 'augeas'
+                 provider: 'augeas',
                ))
 
         aug_open(target, 'Ssh.lns') do |aug|
@@ -319,7 +319,7 @@ describe provider_class do
                     name: 'ForwardAgent',
                     value: 'yes',
                     target: target,
-                    provider: 'augeas'
+                    provider: 'augeas',
                   ))
 
       expect(txn.any_failed?).not_to eq(nil)
