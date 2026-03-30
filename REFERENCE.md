@@ -4,12 +4,82 @@
 
 ## Table of Contents
 
+### Classes
+
+* [`augeasproviders_ssh`](#augeasproviders_ssh): Main class for hash expansions of types
+
 ### Resource types
 
 * [`ssh_config`](#ssh_config): Manages settings in an OpenSSH ssh_config file.  The resource name is used for the setting name, but if the `host` is given, then the name ca
 * [`sshd_config`](#sshd_config): Manages settings in an OpenSSH sshd_config file.  The resource name is used for the setting name, but if the `condition` is given, then the n
 * [`sshd_config_match`](#sshd_config_match): Manages Match groups in an OpenSSH sshd_config file.
 * [`sshd_config_subsystem`](#sshd_config_subsystem): Manages Subsystem settings in an OpenSSH sshd_config file.
+
+## Classes
+
+### <a name="augeasproviders_ssh"></a>`augeasproviders_ssh`
+
+Main class for hash expansions of types
+
+#### Examples
+
+##### Two sshd configurations as a hash
+
+```puppet
+class{ augeasproviders_ssh:
+  sshd_configs => {
+    'PubkeyAuthentication' => {
+       'ensure' => 'present',
+       'value'  => 'yes',
+    },
+    'PermitRootLogin' => {
+       'ensure' => 'present',
+       'value'  => 'yes',
+    }
+  }
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `augeasproviders_ssh` class:
+
+* [`ssh_configs`](#-augeasproviders_ssh--ssh_configs)
+* [`sshd_config_matches`](#-augeasproviders_ssh--sshd_config_matches)
+* [`sshd_configs`](#-augeasproviders_ssh--sshd_configs)
+* [`sshd_config_subsystems`](#-augeasproviders_ssh--sshd_config_subsystems)
+
+##### <a name="-augeasproviders_ssh--ssh_configs"></a>`ssh_configs`
+
+Data type: `Stdlib::CreateResources`
+
+Hash expansion of ssh_config type
+
+Default value: `{}`
+
+##### <a name="-augeasproviders_ssh--sshd_config_matches"></a>`sshd_config_matches`
+
+Data type: `Stdlib::CreateResources`
+
+Hash expansion of sshd_config_matches type
+
+Default value: `{}`
+
+##### <a name="-augeasproviders_ssh--sshd_configs"></a>`sshd_configs`
+
+Data type: `Stdlib::CreateResources`
+
+Hash expansion of sshd_config type
+
+Default value: `{}`
+
+##### <a name="-augeasproviders_ssh--sshd_config_subsystems"></a>`sshd_config_subsystems`
+
+Data type: `Stdlib::CreateResources`
+
+Hash expansion of sshd_config_subsystems type
+
+Default value: `{}`
 
 ## Resource types
 
