@@ -127,8 +127,9 @@ Puppet::Type.type(:sshd_config_match).provide(:augeas, parent: Puppet::Type.type
 
   def comment
     augopen do |aug|
+      name = Regexp.escape(resource[:name])
       comment = aug.get('$resource/Settings/#comment[1]')
-      comment&.sub!(%r{^#{resource[:name]}:\s*}i, '')
+      comment&.sub!(%r{^#{name}:\s*}i, '')
       comment || ''
     end
   end
