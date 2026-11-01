@@ -360,4 +360,3 @@ will usually discover the appropriate provider for your platform.
 
 The file in which to store the settings, defaults to
 `/etc/ssh/sshd_config`.
-
