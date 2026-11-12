@@ -42,6 +42,38 @@ describe provider_class do
     end
   end
 
+  context 'with condition containing regex chars' do
+    let(:tmptarget) { aug_fixture('empty') }
+    let(:target) { tmptarget.path }
+
+    it 'creates simple new entry' do
+      apply!(Puppet::Type.type(:sshd_config_match).new(
+               name: 'Host *',
+               target: target,
+               ensure: :present,
+               provider: 'augeas'
+             ))
+
+      aug_open(target, 'Sshd.lns') do |aug|
+        expect(aug.get('Match/Condition/Host')).to eq('*')
+      end
+    end
+
+    it 'creates new comment before entry' do
+      apply!(Puppet::Type.type(:sshd_config_match).new(
+               name: 'Host *',
+               target: target,
+               ensure: :present,
+               comment: 'manage host *',
+               provider: 'augeas'
+             ))
+
+      aug_open(target, 'Sshd.lns') do |aug|
+        expect(aug.get('Match[Condition/Host]/Settings/#comment')).to eq('Host *: manage host *')
+      end
+    end
+  end
+
   context 'with full file' do
     let(:tmptarget) { aug_fixture('full') }
     let(:target) { tmptarget.path }
