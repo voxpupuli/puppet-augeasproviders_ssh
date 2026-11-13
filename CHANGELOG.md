@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v8.0.0) (2026-11-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/v7.0.0...v8.0.0)
+
+**Breaking changes:**
+
+- Drop EOL operating systems Ubuntu 20.04, Fedora 40 [\#125](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/125) ([Joris29](https://github.com/Joris29))
+- Drop puppet, update openvox minimum version to 8.19 [\#118](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/118) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- puppet/augeasproviders\_core: Allow 5.x & puppetlabs/stdlib: Allow 10.x [\#142](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/142) ([bastelfreak](https://github.com/bastelfreak))
+- Update requirements to allow OpenVox 9 [\#141](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/141) ([sebastianrakel](https://github.com/sebastianrakel))
+- Add support Debian 13, Ubuntu 24.04, RedHat 10, CentOS 10, Rocky 10, AlmaLinux 10, OracleLinux 9 and OracleLinux 10 [\#126](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/126) ([Joris29](https://github.com/Joris29))
+- Add hash expansion of existing types [\#120](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/120) ([traylenator](https://github.com/traylenator))
+- metadata.json: Add OpenVox [\#116](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/116) ([jstraw](https://github.com/jstraw))
+
+**Fixed bugs:**
+
+- `sshkey` `ensure => hashed` never converges when the entry has aliases [\#134](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues/134)
+- `sshkey` `hash_hostname => true` is supposed to write a hashed entry, but a plain-text one is written instead [\#133](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues/133)
+- Purging sshkeys deletes keys that are declared in the catalog [\#130](https://github.com/voxpupuli/puppet-augeasproviders_ssh/issues/130)
+- Fix `ensure => hashed` writing unusable lines for `sshkey` aliases [\#137](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/137) ([alexjfisher](https://github.com/alexjfisher))
+- Fix `hash_hostname` being ignored on `sshkey` [\#136](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/136) ([alexjfisher](https://github.com/alexjfisher))
+- Report key type when listing `sshkey` entries [\#135](https://github.com/voxpupuli/puppet-augeasproviders_ssh/pull/135) ([alexjfisher](https://github.com/alexjfisher))
+
 ## [v7.0.0](https://github.com/voxpupuli/puppet-augeasproviders_ssh/tree/v7.0.0) (2024-09-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_ssh/compare/v6.0.0...v7.0.0)
